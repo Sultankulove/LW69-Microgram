@@ -23,10 +23,10 @@ public class Comment {
     @JoinColumn(name = "post_id")
     private Post postId;
 
-    @JoinColumn(name = "textComment")
+    @Column(name = "text_comment")
     private String textComment;
 
-    @JoinColumn(name = "createdAt")
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
 
