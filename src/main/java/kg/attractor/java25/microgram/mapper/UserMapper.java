@@ -20,7 +20,7 @@ public class UserMapper {
     public static User fromDto(UserRequestDto userRequestDto) {
         if (userRequestDto == null) return null;
         User user = new User();
-        user.setUsername(userRequestDto.getUsername());
+        user.setName(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
         user.setPassword(userRequestDto.getPassword());
         user.setDisplayName(userRequestDto.getDisplayName());

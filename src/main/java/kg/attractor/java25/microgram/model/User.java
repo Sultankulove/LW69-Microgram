@@ -18,12 +18,26 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String username;
+
+    @Column(name = "username", nullable = false, length = 50, unique = true)
+    private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
+
+    @Column(name = "role")
     private String role;
+
+    @Column(name = "bio")
     private String bio;
+
+    @Column(name = "avatar")
     private String avatar;
+
+    @Column(name = "enabled")
     private boolean enabled;
 
     @Column(name = "display_name")
@@ -38,13 +52,13 @@ public class User implements UserDetails {
     @Column(name = "following_count")
     private Integer followingCount;
 
-    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "authorId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "followerId", cascade = CascadeType.ALL)
@@ -55,8 +69,11 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        String r = (role == null || role.isBlank()) ? "ROLE_USER"
+                : (role.startsWith("ROLE_") ? role : "ROLE_" + role);
+        return List.of(new SimpleGrantedAuthority(r));
     }
+
 
     @Override
     public String getUsername() {
