@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
-
+//                .httpBasic(Customizer.withDefaults())
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/login")
@@ -38,32 +38,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/webjars/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
 
-                        .requestMatchers("/", "/auth/**", "/error", "/auth/reset-password").permitAll()
-                        .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
-                        .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/topic/**", "/app/**").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/api/vacancies/**").hasRole("EMPLOYER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/resumes/**").hasRole("APPLICANT")
-                        .requestMatchers(HttpMethod.PUT,   "/api/vacancies/**").hasRole("EMPLOYER")
-                        .requestMatchers(HttpMethod.PUT,   "/api/resumes/**").hasRole("APPLICANT")
-                        .requestMatchers(HttpMethod.POST,  "/api/vacancies/**").hasRole("EMPLOYER")
-                        .requestMatchers(HttpMethod.POST,  "/api/resumes/**").hasRole("APPLICANT")
-                        .requestMatchers(HttpMethod.DELETE,"/api/vacancies/**").hasRole("EMPLOYER")
-                        .requestMatchers(HttpMethod.DELETE,"/api/resumes/**").hasRole("APPLICANT")
-
-                        .requestMatchers("/profile/**").authenticated()
-                        .requestMatchers("/api/profile/avatar").authenticated()
-
-                        .requestMatchers("/resumes/**", "/profile/vacancies", "/vacancy/*/edit","/vacancy/new", "/chat/start/*", "/chat/*").hasRole("EMPLOYER")
-
-                        .requestMatchers("/vacancies/**", "/vacancy/**", "/profile/resumes", "/resumes/*/edit", "resume/new").hasRole("APPLICANT")
-
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
     }
 
 }
-
