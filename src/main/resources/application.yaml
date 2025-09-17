@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: "LW69-Microgram"
+  datasource:
+    url: "jdbc:h2:./db/test;AUTO_SERVER=TRUE"
+    username: root
+    password: qwerty
+    driver-class-name: org.h2.Driver
