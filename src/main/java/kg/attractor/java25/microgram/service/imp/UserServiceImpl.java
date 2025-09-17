@@ -1,11 +1,13 @@
 package kg.attractor.java25.microgram.service.imp;
 
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
+import kg.attractor.java25.microgram.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import kg.attractor.java25.microgram.mapper.UserMapper;
 import kg.attractor.java25.microgram.model.User;
 
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +33,17 @@ public class UserServiceImpl implements UserService {
        return userRepository.save(user);
     }
 
+    @Override
+    public Long findUserIdByEmail(String email) {
+        return userRepository.findUserIdByEmailIgnoreCase(email)
+                .orElseThrow(() -> new NotFoundException("Email: " + email));
+
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.getUserById(id);
+    }
 
 
     @Override
