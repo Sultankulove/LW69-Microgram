@@ -1,4 +1,4 @@
-package midel;
+package kg.attractor.java25.microgram.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,16 +16,18 @@ public class Comment {
     private Long id;
 
     @ManyToOne
-    @Column(name = "author_id")
+    @JoinColumn(name = "author_id")
     private User authorId;
 
     @ManyToOne
-    @Column(name = "post_id")
+    @JoinColumn(name = "post_id")
     private Post postId;
 
-    @Column(name = "textComment")
+    @JoinColumn(name = "textComment")
     private String textComment;
 
-    @Column(name = "createdAt")
+    @JoinColumn(name = "createdAt")
     private Timestamp createdAt;
+
+
 }

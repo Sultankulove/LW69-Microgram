@@ -1,4 +1,4 @@
-package midel;
+package kg.attractor.java25.microgram.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class Post {
     private Long id;
 
     @ManyToOne
-    @Column(name = "author_id")
+    @JoinColumn(name = "author_id")
     private User authorId;
 
     private String image;
@@ -33,10 +33,11 @@ public class Post {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "postId",cascade = CascadeType.ALL)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
     private List<Like> likes;
 
 }

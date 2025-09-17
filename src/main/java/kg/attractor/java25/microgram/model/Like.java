@@ -1,4 +1,4 @@
-package midel;
+package kg.attractor.java25.microgram.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,19 +9,19 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Table(name = "follows")
-public class Follow {
+@Table(name = "likes")
+public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @Column(name = "follower_id")
-    private User followerId;
+    @JoinColumn(name = "user_id")
+    private User userId;
 
     @ManyToOne
-    @Column(name = "following_id")
-    private User followingId;
+    @JoinColumn(name = "post_id")
+    private Post postId;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

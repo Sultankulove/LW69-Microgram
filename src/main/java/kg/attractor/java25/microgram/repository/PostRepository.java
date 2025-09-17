@@ -1,6 +1,6 @@
-package repository;
+package kg.attractor.java25.microgram.repository;
 
-import midel.Post;
+import kg.attractor.java25.microgram.model.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Long> {

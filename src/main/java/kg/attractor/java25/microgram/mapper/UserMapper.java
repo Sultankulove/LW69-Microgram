@@ -1,9 +1,9 @@
-package mapper;
+package kg.attractor.java25.microgram.mapper;
 
-import dto.UserRegisterDto;
-import dto.UserRequestDto;
-import dto.UserResponseDto;
-import midel.User;
+import kg.attractor.java25.microgram.dto.UserRegisterDto;
+import kg.attractor.java25.microgram.dto.UserRequestDto;
+import kg.attractor.java25.microgram.dto.UserResponseDto;
+import kg.attractor.java25.microgram.model.User;
 
 public class UserMapper {
     public static UserResponseDto toDto(User user) {
@@ -20,7 +20,7 @@ public class UserMapper {
     public static User fromDto(UserRequestDto userRequestDto) {
         if (userRequestDto == null) return null;
         User user = new User();
-        user.setUsername(userRequestDto.getUsername());
+        user.setName(userRequestDto.getUsername());
         user.setEmail(userRequestDto.getEmail());
         user.setPassword(userRequestDto.getPassword());
         user.setDisplayName(userRequestDto.getDisplayName());

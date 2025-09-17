@@ -1,17 +1,17 @@
-package service.imp;
+package kg.attractor.java25.microgram.service.imp;
 
-import dto.UserRegisterDto;
+import kg.attractor.java25.microgram.dto.UserRegisterDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import mapper.UserMapper;
-import midel.User;
+import kg.attractor.java25.microgram.mapper.UserMapper;
+import kg.attractor.java25.microgram.model.User;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
-import service.UserService;
+import kg.attractor.java25.microgram.repository.UserRepository;
+import kg.attractor.java25.microgram.service.UserService;
 
 @Service
 @AllArgsConstructor
