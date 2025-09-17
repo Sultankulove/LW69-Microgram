@@ -6,10 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface PostService {
-    void createPost(PostUpsertDto dto);
+
+    @Transactional
+    Long createPost(PostUpsertDto dto, MultipartFile image);
 
     Long createPostWithImage(MultipartFile image, String description, String name);
 
-//    @Transactional
-//    PostDto createPostWithImage(PostUpsertDto dto, MultipartFile image);
 }
