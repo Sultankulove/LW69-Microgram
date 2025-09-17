@@ -62,10 +62,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "followerId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
     private List<Follow> following;
 
-    @OneToMany(mappedBy = "followingId")
+    @OneToMany(mappedBy = "following")
     private List<Follow> followers;
 
     @Override

@@ -23,14 +23,14 @@ public class FollowingServiceImp implements FollowService {
             log.warn("Попытка подписаться на себя: {}", follower.getId());
             throw new IllegalArgumentException("Нельзя подписаться на самого себя");
         }
-        Optional<Follow> existing = followRepository.findFollowerIdAndFollowingId(follower,following);
+        Optional<Follow> existing = followRepository.findByFollowerAndFollowing(follower,following);
         if (existing.isPresent()) {
             log.warn("Подписка уже существует: {} -> {}", follower.getId(), following.getId());
             return existing.get();
         }
         Follow follow = new Follow();
-        follow.setFollowerId(follower);
-        follow.setFollowingId(following);
+        follow.setFollower(follower);
+        follow.setFollowing(following);
         follow.setCreatedAt(new java.sql.Timestamp(System.currentTimeMillis()));
         return followRepository.save(follow);
     }
@@ -38,19 +38,19 @@ public class FollowingServiceImp implements FollowService {
     @Override
     public void unfollow(User follower, User following) {
         log.info("Пользователь {} отписывается от {}", follower.getId(), following.getId());
-        followRepository.findByFollowerIdAndFollowingId(follower, following);
+        followRepository.findByFollowerAndFollowing(follower, following);
 
     }
 
     @Override
     public List<Follow> getFollowing(User user) {
         log.info("Получаем список подписок пользователя {}", user.getId());
-        return followRepository.findByFollowerId(user);
+        return followRepository.findByFollower(user);
     }
 
     @Override
     public List<Follow> getFollower(User user) {
         log.info("Получаем список подписчиков пользователя {}", user.getId());
-        return followRepository.findByFollowingId(user);
+        return followRepository.findByFollowing(user);
     }
 }

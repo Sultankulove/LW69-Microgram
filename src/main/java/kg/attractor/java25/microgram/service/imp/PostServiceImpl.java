@@ -1,6 +1,6 @@
 package kg.attractor.java25.microgram.service.imp;
 
-import kg.attractor.java25.microgram.dto.image.ImageDto;
+import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
 import kg.attractor.java25.microgram.model.Post;
 import kg.attractor.java25.microgram.repository.PostRepository;
@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -31,26 +33,30 @@ public class PostServiceImpl implements PostService {
         postRepository.save(post);
     }
 
-    @Transactional
     @Override
-    public PostDto createPostWithImage(CreatePostRequest req, MultipartFile image) {
-        if (image == null || image.isEmpty()) {
-            throw new IllegalArgumentException("Изображение обязательно");
-        }
-
-        // 1) сохраняем файл и получаем имя/путь
-        String fileName = fileUtil.saveImage(image); // например "posts/2025/09/17/abc.jpg"
-
-        Post post = new Post();
-        post.setAuthorId(req.authorId());
-        post.setDescription(req.description());
-        post.setCreatedAt(LocalDateTime.now());
-        post.setCommentsCount(0);
-        post.setLikesCount(0);
-        post.setImage(fileName);
-
-        postRepository.save(post);
-
-        return PostDto.from(post);
+    public Long createPostWithImage(MultipartFile image, String description, String name) {
+        return 0L;
     }
+//
+//    @Transactional
+//    @Override
+//    public PostDto createPostWithImage(PostUpsertDto dto, MultipartFile image) {
+//        if (image == null || image.isEmpty()) {
+//            throw new IllegalArgumentException("Изображение обязательно");
+//        }
+//
+//        String fileName = FileUtil.saveImage(image);
+//
+//        Post post = new Post();
+//        post.setAuthor(dto.getAuthorId());
+//        post.setDescription(dto.description());
+//        post.setCreatedAt(LocalDateTime.now());
+//        post.setCommentsCount(0);
+//        post.setLikesCount(0);
+//        post.setImage(fileName);
+//
+//        postRepository.save(post);
+//
+//        return PostDto.from(post);
+//    }
 }
