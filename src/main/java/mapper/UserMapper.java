@@ -1,0 +1,39 @@
+package mapper;
+
+import dto.UserRegisterDto;
+import dto.UserRequestDto;
+import dto.UserResponseDto;
+import midel.User;
+
+public class UserMapper {
+    public static UserResponseDto toDto(User user) {
+        if (user == null) return null;
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setId(user.getId());
+        userResponseDto.setUsername(user.getUsername());
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setDisplayName(user.getDisplayName());
+        userResponseDto.setBio(user.getBio());
+        userResponseDto.setAvatar(user.getAvatar());
+        return userResponseDto;
+    }
+    public static User fromDto(UserRequestDto userRequestDto) {
+        if (userRequestDto == null) return null;
+        User user = new User();
+        user.setUsername(userRequestDto.getUsername());
+        user.setEmail(userRequestDto.getEmail());
+        user.setPassword(userRequestDto.getPassword());
+        user.setDisplayName(userRequestDto.getDisplayName());
+        user.setBio(userRequestDto.getBio());
+        user.setAvatar(userRequestDto.getAvatar());
+        return user;
+    }
+
+    public static User userRegister(UserRegisterDto dto){
+        if (dto == null) return null;
+        User user = new User();
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        return user;
+    }
+}
