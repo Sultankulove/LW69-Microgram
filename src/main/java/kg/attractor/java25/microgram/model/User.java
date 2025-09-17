@@ -52,6 +52,7 @@ public class User implements UserDetails {
     @Column(name = "following_count")
     private Integer followingCount;
 
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Post> posts;
 
@@ -73,7 +74,6 @@ public class User implements UserDetails {
                 : (role.startsWith("ROLE_") ? role : "ROLE_" + role);
         return List.of(new SimpleGrantedAuthority(r));
     }
-
 
     @Override
     public String getUsername() {
