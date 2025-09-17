@@ -1,4 +1,4 @@
-package midel;
+package kg.attractor.java25.microgram.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

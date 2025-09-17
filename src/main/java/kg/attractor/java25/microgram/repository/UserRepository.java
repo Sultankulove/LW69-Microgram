@@ -1,6 +1,6 @@
-package repository;
+package kg.attractor.java25.microgram.repository;
 
-import midel.User;
+import kg.attractor.java25.microgram.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
