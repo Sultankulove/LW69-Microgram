@@ -93,8 +93,16 @@
 <body>
 <div class="login-container">
     <div class="logo">Microgram</div>
-    <form class="login-form">
-        <input type="text" placeholder="Phone number, username, or email" required>
+    <form class="login-form" method="post" action="/login">
+        <#if _csrf??>
+            <input
+                    type="hidden"
+                    name="${(_csrf.parameterName)!'csrf-param-name'}"
+                    value="${(_csrf.token)!'csrf-token'}"/>
+
+        </#if>
+
+        <input type="email" placeholder="Phone number, username, or email" required>
         <input type="password" placeholder="Password" required>
         <button type="submit">Log In</button>
     </form>

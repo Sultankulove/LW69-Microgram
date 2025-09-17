@@ -11,3 +11,13 @@ spring:
 
 server:
   port: 9098
+
+
+logging:
+  level:
+    root: info
+    kg.attractor.job_search_java_25: DEBUG
+    org.springframework.web: INFO
+    org:
+      springframework:
+        security: debug
