@@ -102,8 +102,8 @@
 
         </#if>
 
-        <input type="email" placeholder="Phone number, username, or email" required>
-        <input type="password" placeholder="Password" required>
+        <input type="email" name="username" placeholder="Phone number, username, or email" required>
+        <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Log In</button>
     </form>
     <div class="divider">OR</div>
