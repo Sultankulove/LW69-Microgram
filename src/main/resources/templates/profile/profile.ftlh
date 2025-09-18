@@ -1,5 +1,6 @@
 <#import "../layout.ftlh" as index>
 <@index.layout>
+
 <head>
     <meta charset="UTF-8">
     <title>Личный кабинет | Microgram</title>
