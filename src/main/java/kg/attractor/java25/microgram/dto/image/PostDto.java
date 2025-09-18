@@ -1,6 +1,6 @@
 package kg.attractor.java25.microgram.dto.image;
 
-import kg.attractor.java25.microgram.model.User;
+import kg.attractor.java25.microgram.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +13,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @Builder
 public class PostDto {
-    private User author;
+    private Long id;
+    private UserDto author;
     private String image;
     private String description;
     private int likesCount;

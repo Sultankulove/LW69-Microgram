@@ -15,19 +15,26 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
 public class FileUtil {
     @SneakyThrows
     public static String saveUploadedFile(MultipartFile file, String subDir) {
-        String originalFilename = file.getOriginalFilename();
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+        String originalFilename = Objects.requireNonNull(file.getOriginalFilename(), "Filename is null");
+        String baseName = Paths.get(originalFilename).getFileName().toString();
 
-        if (originalFilename == null || !originalFilename.matches("^[\\w\\-. ]+$")) {
-            throw new IllegalArgumentException("Suspicious file name!");
+        baseName = baseName.replaceAll("[^\\w.\\- ]+", "").trim();
+
+        if (baseName.isBlank()) {
+            baseName = "unknown";
         }
 
-        String filename = UUID.randomUUID() + "_" + originalFilename;
+        String filename = UUID.randomUUID() + "_" + baseName;
 
         Path basePath = Paths.get("data").toAbsolutePath().normalize();
         Path pathDir = basePath.resolve(subDir).normalize();
@@ -36,17 +43,19 @@ public class FileUtil {
             throw new SecurityException("Path traversal attempt detected!");
         }
 
-
         Files.createDirectories(pathDir);
         Path filePath = pathDir.resolve(filename);
+
 
         try (OutputStream outputStream = Files.newOutputStream(filePath)) {
             outputStream.write(file.getBytes());
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("Ошибка сохранения файла: {}", e.getMessage());
         }
+
         return filename;
     }
+
 
     @SneakyThrows
     public static ResponseEntity<?> downloadImage(String fileName, String subDir) {
@@ -66,7 +75,6 @@ public class FileUtil {
             ByteArrayResource resource = new ByteArrayResource(fileBytes);
 
             String contentType = Files.probeContentType(filePath);
-
             if (contentType == null) {
                 contentType = "application/octet-stream";
             }
@@ -76,8 +84,10 @@ public class FileUtil {
                     .contentLength(resource.contentLength())
                     .contentType(MediaType.parseMediaType(contentType))
                     .body(resource);
+
         } catch (NoSuchFileException e) {
             log.error("No file found!", e);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Image not found!");
         }
-    }}
+    }
+}

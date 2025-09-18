@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -35,8 +34,11 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public ResponseEntity<?> downloadImageByPostId(Long postId) {
-        return postRepository.getImageById(postId);
+        String image = postRepository.getImageById(postId)
+                .orElseThrow(() -> new NotFoundException("post id=" + postId));
+        return FileUtil.downloadImage(image, IMAGE);
     }
+
 
     @Transactional
     @Override
