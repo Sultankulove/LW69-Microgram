@@ -3,6 +3,7 @@
     import kg.attractor.java25.microgram.dto.UserProfileDto;
     import kg.attractor.java25.microgram.dto.UserRegisterDto;
     import kg.attractor.java25.microgram.dto.UserResponseDto;
+    import kg.attractor.java25.microgram.dto.UserUpdateDto;
     import kg.attractor.java25.microgram.mapper.UserMapper;
     import kg.attractor.java25.microgram.model.User;
     import kg.attractor.java25.microgram.service.PostService;
@@ -16,6 +17,7 @@
     import org.springframework.validation.BindingResult;
     import org.springframework.web.bind.annotation.*;
     import java.util.List;
+    import java.util.Optional;
     import java.util.stream.Collectors;
 
     @Controller
@@ -91,6 +93,22 @@
 //                    UserMapper.ProfileDto(user,auth,userService,postService);
             model.addAttribute("userProfileDto", userProfileDto);
             return "profile/profile";
+        }
+
+
+        @GetMapping("/update")
+        public String updateUser(Model model, Authentication authentication) {
+           User user = userService.findByEmail(authentication.getName());
+            UserUpdateDto dto = UserMapper.toUpdateDto(user);
+            model.addAttribute("userUpdateDto", dto);
+            return "profile/editUser";
+        }
+
+        @PostMapping("/update")
+        public String updateProfile(@ModelAttribute("userUpdateDto") UserUpdateDto dto,
+                                    Authentication auth) {
+            userService.updateUser(dto, auth);
+            return "redirect:/auth/profile";
         }
 
 

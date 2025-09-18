@@ -16,6 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class FollowingServiceImp implements FollowService {
     private final FollowRepository followRepository;
+
     @Override
     public Follow follow(User follower, User following) {
         log.info("Пользователь {} подписывается на {}", follower.getId(), following.getId());
@@ -23,7 +24,7 @@ public class FollowingServiceImp implements FollowService {
             log.warn("Попытка подписаться на себя: {}", follower.getId());
             throw new IllegalArgumentException("Нельзя подписаться на самого себя");
         }
-        Optional<Follow> existing = followRepository.findByFollowerAndFollowing(follower,following);
+        Optional<Follow> existing = followRepository.findByFollowerAndFollowing(follower, following);
         if (existing.isPresent()) {
             log.warn("Подписка уже существует: {} -> {}", follower.getId(), following.getId());
             return existing.get();

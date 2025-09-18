@@ -1,10 +1,6 @@
 package kg.attractor.java25.microgram.mapper;
 
-import kg.attractor.java25.microgram.dto.UserProfileDto;
-import kg.attractor.java25.microgram.dto.UserDto;
-import kg.attractor.java25.microgram.dto.UserRegisterDto;
-import kg.attractor.java25.microgram.dto.UserRequestDto;
-import kg.attractor.java25.microgram.dto.UserResponseDto;
+import kg.attractor.java25.microgram.dto.*;
 import kg.attractor.java25.microgram.model.User;
 import kg.attractor.java25.microgram.service.PostService;
 import kg.attractor.java25.microgram.service.UserService;
@@ -41,6 +37,7 @@ public class UserMapper {
         user.setName(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
+        user.setDisplayName(dto.getDisplayName());
         user.setEnabled(true);
         user.setRole("ROLE_USER");
         user.setPostsCount(0);
@@ -70,7 +67,6 @@ public class UserMapper {
 
         return userProfileDto;
     }
-
     public static UserDto fromDto(User user) {
         if (user == null) return null;
 
@@ -87,4 +83,23 @@ public class UserMapper {
         userDto.setFollowingCount(user.getFollowingCount());
         return userDto;
     }
+
+
+    public static UserUpdateDto toUpdateDto(User user) {
+        UserUpdateDto dto = new UserUpdateDto();
+        if (user != null) {
+            dto.setName(user.getName() != null ? user.getName() : "");
+            dto.setDisplayName(user.getDisplayName() != null ? user.getDisplayName() : "");
+            dto.setAvatar(user.getAvatar() != null ? user.getAvatar() : "");
+            dto.setBio(user.getBio() != null ? user.getBio() : "");
+        } else {
+            dto.setName("");
+            dto.setDisplayName("");
+            dto.setAvatar("");
+            dto.setBio("");
+        }
+        return dto;
+    }
+
 }
+

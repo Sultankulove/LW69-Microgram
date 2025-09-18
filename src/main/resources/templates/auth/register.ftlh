@@ -91,8 +91,12 @@
                         value="${(_csrf.token)!'csrf-token'}"/>
             </#if>
 
-            <label class="form-label" for="username">Username</label>
+            <label class="form-label" for="username">Имя пользователя</label>
             <@spring.formInput "userRegisterDto.username" 'id="username" class="form-control form-control-lg" placeholder="Введите имя пользователя"' />
+            <@spring.showErrors "<br>" "error text-danger" />
+
+            <label class="form-label" for="username1">Имя фамилия</label>
+            <@spring.formInput "userRegisterDto.displayName" 'id="username1" class="form-control form-control-lg" placeholder="Введите имя фамилия"' />
             <@spring.showErrors "<br>" "error text-danger" />
 
 
