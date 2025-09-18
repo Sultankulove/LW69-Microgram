@@ -26,7 +26,7 @@ public class Comment {
     private Post post;
 
     @Column(name = "text_comment", nullable = false)
-    private String textComment;
+    private String text;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

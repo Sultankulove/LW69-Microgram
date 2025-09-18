@@ -64,19 +64,34 @@
                     <div class="post-header">
                         <img src="${avatarSrc}" alt="${post.author.username!''}">
                         <strong>${post.author.username!''}</strong>
+                        <div class="post-time">${post.createdAt?string("yyyy-MM-dd")}</div>
                     </div>
 
                     <img src="${imageSrc}" alt="${post.description!'Post image'}" class="post-image">
 
                     <div class="post-actions">
-
                         <i class="${post.likedByMe?then('fas','far')} fa-heart"
                            data-post-id="${post.id}"
                            data-liked="${post.likedByMe?c}"
                            onclick="likePost(this)"></i>
-                        <i class="far fa-comment ms-3"></i>
-
+                        <#--                        <i class="far fa-comment ms-3"></i>-->
+                        <i class="far fa-comment ms-3"
+                           role="button"
+                           tabindex="0"
+                           data-open-comments
+                           data-post-id="${post.id}"
+                           title="Комментарии"></i>
                     </div>
+
+                    <#--                    <div class="post-stats">-->
+                    <#--                        <button class="link-btn"-->
+                    <#--                                type="button"-->
+                    <#--                                data-open-comments-->
+                    <#--                                data-post-id="${post.id}">-->
+                    <#--                            View all ${post.commentsCount!0} comments-->
+                    <#--                        </button>-->
+                    <#--                    </div>-->
+
 
                     <div class="post-stats">
                         <strong data-like-count>${post.likesCount!0} likes</strong>
@@ -86,13 +101,37 @@
                         <strong>${post.author.username!''}</strong> ${post.description!''}
                     </div>
 
+
+                    <#--                    <div class="post-stats">-->
+                    <#--                        View all ${post.commentsCount!0} comments-->
+                    <#--                    </div>-->
+
                     <div class="post-stats">
-                        View all ${post.commentsCount!0} comments
+                        <span class="link-btn"
+                              data-open-comments
+                              data-post-id="${post.id}">
+                                View all ${post.commentsCount!0} comments
+                        </span>
                     </div>
 
-                    <div class="post-time">
-                        ${post.createdAt?string("yyyy-MM-dd")}
-                    </div>
+                    <div class="post-stats" data-comments data-post-id="${post.id}" hidden>
+                        <div class="comments-list" data-comments-list></div>
+
+                        <form class="comment-form" data-comment-form onsubmit="return false;">
+                            <input type="text" name="text" maxlength="1000" placeholder="Добавьте комментарий…"/>
+                            <button type="submit">Отправить</button>
+                        </form>
+
+                    <#--                    <div class="comments" data-comments data-post-id="${post.id}" hidden>-->
+                    <#--                        <div class="comments-list" data-comments-list></div>-->
+
+                    <#--                        <form class="comment-form" data-comment-form onsubmit="return false;">-->
+                    <#--                            <input type="text" name="text" maxlength="1000" placeholder="Добавьте комментарий…"/>-->
+                    <#--                            <button type="submit">Отправить</button>-->
+                    <#--                        </form>-->
+                    <#--                    </div>-->
+
+
                 </div>
             </#list>
         </div>
@@ -142,6 +181,139 @@
             });
         }
 
+        //
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('[data-open-comments]');
+            if (!btn) return;
+            const postId = btn.getAttribute('data-post-id');
+            const box = btn.closest('.post-card').querySelector('[data-comments]');
+            if (box.hasAttribute('hidden')) {
+                await loadComments(postId, box.querySelector('[data-comments-list]'));
+                box.removeAttribute('hidden');
+            } else {
+                box.setAttribute('hidden', '');
+            }
+        });
+
+        async function loadComments(postId, listNode) {
+            listNode.innerHTML = 'Загрузка...';
+            const res = await fetch('/api/comments/' + postId, {method: 'GET'});
+            if (!res.ok) {
+                listNode.textContent = 'Ошибка загрузки';
+                return;
+            }
+            const items = await res.json();
+            renderComments(items, listNode);
+        }
+
+        function renderComments(items, listNode) {
+            if (!items.length) {
+                listNode.textContent = 'Пока нет комментариев';
+                return;
+            }
+            listNode.innerHTML = '';
+            for (const c of items) {
+                const el = document.createElement('div');
+                el.className = 'comment-row';
+                el.setAttribute('data-comment-id', c.id);
+                el.innerHTML =
+                    '<strong>' + escapeHtml(c.authorUsername || '') + '</strong>' +
+                    '<span>' + escapeHtml(c.text || '') + '</span>' +
+                    (c.mine ? '<button type="button" class="delete-comment" data-del>Удалить</button>' : '');
+
+            }
+        }
+
+
+        document.addEventListener('submit', async (e) => {
+            const form = e.target.closest('[data-comment-form]');
+            if (!form) return;
+            const box = form.closest('[data-comments]');
+            const postId = box.getAttribute('data-post-id');
+            const listNode = box.querySelector('[data-comments-list]');
+            const input = form.querySelector('input[name="text"]');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const res = await fetch('/api/comments/' + postId, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', [header]: token},
+                body: JSON.stringify({text})
+            });
+            if (!res.ok) {
+                if (res.status === 401) return (window.location.href = '/auth/login');
+                return alert('Не удалось добавить комментарий');
+            }
+            const dto = await res.json();
+
+
+            const itemsNow = listNode.querySelectorAll('.comment-row').length;
+            const row = document.createElement('div');
+            row.className = 'comment-row';
+            row.setAttribute('data-comment-id', dto.id);
+            row.innerHTML =
+                '<strong>' + escapeHtml(dto.authorUsername || '') + '</strong>' +
+                '<span>' + escapeHtml(dto.text || '') + '</span>' +
+                (dto.mine ? '<button type="button" class="delete-comment" data-del>Удалить</button>' : '');
+
+            if (itemsNow === 0 && listNode.textContent === 'Пока нет комментариев') listNode.textContent = '';
+            listNode.prepend(row);
+
+
+            const stat = box.closest('.post-card').querySelector('.post-stats .link-btn[data-open-comments]');
+            if (stat) {
+                const m = stat.textContent.trim().match(/(\d+)/);
+                const count = m ? parseInt(m[1], 10) : 0;
+                stat.textContent = 'View all ' + (count + 1) + ' comments';
+            }
+
+            input.value = '';
+        });
+
+
+        document.addEventListener('click', async (e) => {
+            const btn = e.target.closest('[data-del]');
+            if (!btn) return;
+            const row = btn.closest('.comment-row');
+            const commentId = row.getAttribute('data-comment-id');
+            if (!commentId) return;
+            if (!confirm('Удалить комментарий?')) return;
+
+            const res = await fetch('/api/comments/' + commentId, {
+                method: 'DELETE',
+                headers: {[header]: token}
+            });
+            if (!res.ok) {
+                return alert('Не удалось удалить');
+            }
+
+            const box = row.closest('[data-comments]');
+            const listNode = box.querySelector('[data-comments-list]');
+            row.remove();
+
+
+            const stat = box.closest('.post-card').querySelector('.post-stats .link-btn[data-open-comments]');
+            if (stat) {
+                const m = stat.textContent.trim().match(/(\d+)/);
+                const count = m ? parseInt(m[1], 10) : 0;
+                const next = Math.max(0, count - 1);
+                stat.textContent = 'View all' + next + 'comments';
+            }
+
+            if (!listNode.querySelector('.comment-row')) {
+                listNode.textContent = 'Пока нет комментариев';
+            }
+        });
+
+        function escapeHtml(s) {
+            return (s || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[m]));
+        }
     </script>
 
 </@index.layout>
