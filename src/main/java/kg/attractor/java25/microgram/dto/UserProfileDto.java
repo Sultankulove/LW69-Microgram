@@ -1,6 +1,6 @@
 package kg.attractor.java25.microgram.dto;
 
-import kg.attractor.java25.microgram.model.Post;
+import kg.attractor.java25.microgram.dto.image.PostDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +20,7 @@ public class UserProfileDto {
     private Integer followersCount;
     private Integer followingCount;
 
-    private List<Post> posts;
+    private List<PostDto> posts;
 
     private boolean following;
 }

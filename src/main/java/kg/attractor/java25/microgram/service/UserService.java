@@ -1,5 +1,6 @@
 package kg.attractor.java25.microgram.service;
 
+import kg.attractor.java25.microgram.dto.UserProfileDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
 import kg.attractor.java25.microgram.model.User;
 import org.springframework.security.core.Authentication;
@@ -30,4 +31,5 @@ public interface UserService extends UserDetailsService {
     int getFollowingCount(User user);
     boolean isFollowing(User follower, User following);
 
+    UserProfileDto getUserProfileByUserId(Long id);
 }
