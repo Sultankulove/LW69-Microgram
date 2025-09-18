@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -14,5 +16,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     int savePostImage(@Param("fileName") String fileName,
                       @Param("postId") Long postId);
 
-    ResponseEntity<?> getImageById(Long id);
+    @Query("select p.image from Post p where p.id = :id")
+    Optional<String> getImageById(@Param("id") Long id);
+
+    List<Post> findPostByAuthor_Id(Long authorId);
 }

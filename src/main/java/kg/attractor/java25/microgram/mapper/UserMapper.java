@@ -1,5 +1,6 @@
 package kg.attractor.java25.microgram.mapper;
 
+import kg.attractor.java25.microgram.dto.UserDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
 import kg.attractor.java25.microgram.dto.UserRequestDto;
 import kg.attractor.java25.microgram.dto.UserResponseDto;
@@ -35,5 +36,22 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         return user;
+    }
+
+    public static UserDto fromDto(User user) {
+        if (user == null) return null;
+
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setDisplayName(user.getDisplayName());
+        userDto.setBio(user.getBio());
+        userDto.setAvatar(user.getAvatar());
+        userDto.setRole(user.getRole());
+        userDto.setPostsCount(user.getPostsCount());
+        userDto.setFollowersCount(user.getFollowersCount());
+        userDto.setFollowingCount(user.getFollowingCount());
+        return userDto;
     }
 }

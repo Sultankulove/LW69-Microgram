@@ -3,7 +3,6 @@ package kg.attractor.java25.microgram.controller.api;
 import kg.attractor.java25.microgram.dto.image.AvatarDto;
 import kg.attractor.java25.microgram.dto.image.ImageDto;
 import kg.attractor.java25.microgram.service.ImageService;
-import kg.attractor.java25.microgram.service.PostService;
 import kg.attractor.java25.microgram.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import java.security.Principal;
 public class ImageApiController {
     private final ImageService imageService;
     private final UserService userService;
-    private final PostService postService;
 
 
     @PostMapping("/image")
@@ -40,6 +38,16 @@ public class ImageApiController {
     @GetMapping("/image")
     public ResponseEntity<?> downloadImage(Long postId) {
         return imageService.downloadImageByPostId(postId);
+    }
+
+    @GetMapping("image/{id}")
+    public ResponseEntity<?> downloadImageById(@PathVariable Long id) {
+        return imageService.downloadImageByPostId(id);
+    }
+
+    @GetMapping("/avatar/{id}")
+    public ResponseEntity<?> downloadAvatarById(@PathVariable Long id) {
+        return imageService.getAvatarById(id);
     }
 
     @PostMapping("/avatar")

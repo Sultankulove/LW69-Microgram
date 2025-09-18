@@ -1,6 +1,8 @@
 package kg.attractor.java25.microgram.service.imp;
 
+import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
+import kg.attractor.java25.microgram.mapper.UserMapper;
 import kg.attractor.java25.microgram.model.Post;
 import kg.attractor.java25.microgram.repository.PostRepository;
 import kg.attractor.java25.microgram.service.PostService;
@@ -10,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,4 +41,40 @@ public class PostServiceImpl implements PostService {
 
         return saved.getId();
     }
+
+    @Override
+    public List<PostDto> getRandomPosts() {
+        List<Post> posts = postRepository.findAll();
+        Collections.shuffle(posts);
+
+        return posts.stream()
+                .map(post -> PostDto.builder()
+                        .id(post.getId())
+                        .author(UserMapper.fromDto(post.getAuthor()))
+                        .description(post.getDescription())
+                        .image(post.getImage())
+                        .createdAt(post.getCreatedAt())
+                        .commentsCount(post.getCommentsCount())
+                        .likesCount(post.getLikesCount())
+                        .build())
+                .limit(10)
+                .toList();
+    }
+
+    @Override
+    public List<PostDto> getMyPosts(Long id) {
+
+        List<Post> posts = postRepository.findPostByAuthor_Id(id);
+        return posts.stream()
+                .map(post -> PostDto.builder()
+                        .id(post.getId())
+                        .author(UserMapper.fromDto(post.getAuthor()))
+                        .description(post.getDescription())
+                        .image(post.getImage())
+                        .createdAt(post.getCreatedAt())
+                        .commentsCount(post.getCommentsCount())
+                        .likesCount(post.getLikesCount())
+                        .build())
+                .limit(10)
+                .toList();    }
 }

@@ -12,4 +12,5 @@ public interface ImageService {
     void uploadImage(ImageDto build);
 
     ResponseEntity<?> downloadImageByPostId(Long postId);
+
 }
