@@ -20,4 +20,6 @@ public class PostDto {
     private int likesCount;
     private int commentsCount;
     private Timestamp createdAt;
+
+    private boolean likedByMe;
 }

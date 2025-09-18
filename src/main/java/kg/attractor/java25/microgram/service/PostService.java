@@ -12,7 +12,7 @@ public interface PostService {
     @Transactional
     Long createPost(PostUpsertDto dto, MultipartFile image);
 
-    List<PostDto> getRandomPosts();
+    List<PostDto> getRandomPosts(Long userId);
 
     List<PostDto> getMyPosts(Long id);
 }
