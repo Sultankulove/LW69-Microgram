@@ -44,14 +44,13 @@ public class User implements UserDetails {
     private String displayName;
 
     @Column(name = "posts_count")
-    private Integer postsCount;
+    private Integer postsCount=0;
 
     @Column(name = "followers_count")
-    private Integer followersCount;
+    private Integer followersCount=0;
 
     @Column(name = "following_count")
-    private Integer followingCount;
-
+    private Integer followingCount=0;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Post> posts;
@@ -65,7 +64,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
     private List<Follow> following;
 
-    @OneToMany(mappedBy = "following")
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
     private List<Follow> followers;
 
     @Override
@@ -74,6 +73,7 @@ public class User implements UserDetails {
                 : (role.startsWith("ROLE_") ? role : "ROLE_" + role);
         return List.of(new SimpleGrantedAuthority(r));
     }
+
 
     @Override
     public String getUsername() {

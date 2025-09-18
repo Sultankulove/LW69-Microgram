@@ -23,4 +23,11 @@ public interface UserService extends UserDetailsService {
 
 
     User findByEmail(String email);
+
+
+    int getPostsCount(User user);
+    int getFollowersCount(User user);
+    int getFollowingCount(User user);
+    boolean isFollowing(User follower, User following);
+
 }

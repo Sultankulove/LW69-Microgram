@@ -116,4 +116,24 @@ public class UserServiceImpl implements UserService {
                 user.getAuthorities()
         );
     }
+    @Override
+    public int getPostsCount(User user) {
+        return user.getPosts() != null ? user.getPosts().size() : 0;
+    }
+
+    @Override
+    public int getFollowersCount(User user) {
+        return followService.countFollowers(user);
+    }
+
+    @Override
+    public int getFollowingCount(User user) {
+        return followService.countFollowing(user);
+    }
+
+    @Override
+    public boolean isFollowing(User follower, User following) {
+        return followService.isFollowing(follower, following);
+    }
+
 }

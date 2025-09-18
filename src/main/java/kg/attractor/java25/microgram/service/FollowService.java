@@ -10,4 +10,9 @@ public interface FollowService {
     void unfollow(User followers, User following);
     List<Follow> getFollowing(User user);
     List<Follow>getFollower(User user);
+
+
+    boolean isFollowing(User follower, User following);
+    int countFollowers(User user);
+    int countFollowing(User user);
 }

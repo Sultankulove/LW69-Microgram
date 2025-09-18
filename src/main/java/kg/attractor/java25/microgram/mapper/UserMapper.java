@@ -1,9 +1,13 @@
 package kg.attractor.java25.microgram.mapper;
 
+import kg.attractor.java25.microgram.dto.UserProfileDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
 import kg.attractor.java25.microgram.dto.UserRequestDto;
 import kg.attractor.java25.microgram.dto.UserResponseDto;
 import kg.attractor.java25.microgram.model.User;
+import kg.attractor.java25.microgram.service.PostService;
+import kg.attractor.java25.microgram.service.UserService;
+import org.springframework.security.core.Authentication;
 
 public class UserMapper {
     public static UserResponseDto toDto(User user) {
@@ -17,6 +21,7 @@ public class UserMapper {
         userResponseDto.setAvatar(user.getAvatar());
         return userResponseDto;
     }
+
     public static User fromDto(UserRequestDto userRequestDto) {
         if (userRequestDto == null) return null;
         User user = new User();
@@ -29,11 +34,40 @@ public class UserMapper {
         return user;
     }
 
-    public static User userRegister(UserRegisterDto dto){
+    public static User userRegister(UserRegisterDto dto) {
         if (dto == null) return null;
         User user = new User();
+        user.setName(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
+        user.setEnabled(true);
+        user.setRole("ROLE_USER");
+        user.setPostsCount(0);
+        user.setFollowersCount(0);
+        user.setFollowingCount(0);
         return user;
+    }
+
+
+    public static UserProfileDto ProfileDto(User user, Authentication auth, UserService userService, PostService postService) {
+        if (user == null) return null;
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userProfileDto.setId(user.getId());
+        userProfileDto.setUsername(user.getName());
+        userProfileDto.setDisplayName(user.getDisplayName());
+        userProfileDto.setBio(user.getBio());
+        userProfileDto.setEmail(user.getEmail());
+        userProfileDto.setAvatar(user.getAvatar());
+
+        userProfileDto.setPostsCount(userService.getPostsCount(user));
+        user.setFollowersCount(userService.getFollowersCount(user));
+        user.setFollowingCount(userService.getFollowingCount(user));
+
+        if (auth != null) {
+            User currentUser = userService.findByEmail(auth.getName());
+            userProfileDto.setFollowing(userService.isFollowing(currentUser, user));
+        }
+
+        return userProfileDto;
     }
 }
