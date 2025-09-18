@@ -69,6 +69,8 @@ public class UserMapper {
         }
 
         return userProfileDto;
+    }
+
     public static UserDto fromDto(User user) {
         if (user == null) return null;
 

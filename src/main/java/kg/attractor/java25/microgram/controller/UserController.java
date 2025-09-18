@@ -81,10 +81,14 @@
         }
 
 
-        @GetMapping("/profile/{id}")
-        public String viewProfile(@PathVariable("id") Long id, Model model, Authentication auth) {
-            User user = userService.getById(id);
-            UserProfileDto userProfileDto = UserMapper.ProfileDto(user,auth,userService,postService);
+        @GetMapping("/profile")
+        public String viewProfile(
+                Model model,
+                Authentication auth) {
+            User user = userService.findByEmail(auth.getName());
+
+            UserProfileDto userProfileDto = userService.getUserProfileByUserId(user.getId());
+//                    UserMapper.ProfileDto(user,auth,userService,postService);
             model.addAttribute("userProfileDto", userProfileDto);
             return "profile/profile";
         }

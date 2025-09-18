@@ -1,9 +1,14 @@
 package kg.attractor.java25.microgram.service.imp;
 
+import kg.attractor.java25.microgram.dto.UserProfileDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
+import kg.attractor.java25.microgram.dto.image.PostDto;
+import kg.attractor.java25.microgram.model.Post;
 import kg.attractor.java25.microgram.repository.FollowRepository;
+import kg.attractor.java25.microgram.repository.PostRepository;
 import kg.attractor.java25.microgram.service.FollowService;
 import kg.attractor.java25.microgram.exceptions.NotFoundException;
+import kg.attractor.java25.microgram.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import kg.attractor.java25.microgram.mapper.UserMapper;
@@ -27,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private FollowService followService;
+    private PostRepository postRepository;
     private FollowRepository followRepository;
 
     @Override
@@ -135,5 +141,39 @@ public class UserServiceImpl implements UserService {
     public boolean isFollowing(User follower, User following) {
         return followService.isFollowing(follower, following);
     }
+
+    @Override
+    public UserProfileDto getUserProfileByUserId(Long id) {
+        User user = userRepository.getUserById(id);
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userProfileDto.setId(user.getId());
+        userProfileDto.setUsername(user.getName());
+        userProfileDto.setDisplayName(user.getDisplayName());
+        userProfileDto.setEmail(user.getEmail());
+        userProfileDto.setBio(user.getBio());
+        userProfileDto.setAvatar(user.getAvatar());
+
+        userProfileDto.setPostsCount(user.getPostsCount());
+        userProfileDto.setFollowersCount(user.getFollowersCount());
+        userProfileDto.setFollowingCount(user.getFollowingCount());
+
+        userProfileDto.setPosts(getMyPosts(id));
+        return userProfileDto;
+    }
+
+    private List<PostDto> getMyPosts(Long id) {
+
+        List<Post> posts = postRepository.findPostByAuthor_Id(id);
+        return posts.stream()
+                .map(post -> PostDto.builder()
+                        .id(post.getId())
+                        .author(UserMapper.fromDto(post.getAuthor()))
+                        .description(post.getDescription())
+                        .image(post.getImage())
+                        .createdAt(post.getCreatedAt())
+                        .commentsCount(post.getCommentsCount())
+                        .likesCount(post.getLikesCount())
+                        .build())
+                .toList();    }
 
 }
