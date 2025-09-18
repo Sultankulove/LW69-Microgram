@@ -53,4 +53,19 @@ public class FollowingServiceImp implements FollowService {
         log.info("Получаем список подписчиков пользователя {}", user.getId());
         return followRepository.findByFollowing(user);
     }
+
+    @Override
+    public boolean isFollowing(User follower, User following) {
+        return followRepository.findByFollowerAndFollowing(follower, following).isPresent();
+    }
+
+    @Override
+    public int countFollowers(User user) {
+        return followRepository.countByFollowing(user);
+    }
+
+    @Override
+    public int countFollowing(User user) {
+        return followRepository.countByFollower(user);
+    }
 }
