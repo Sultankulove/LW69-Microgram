@@ -20,4 +20,6 @@ public class UserDto {
     private Integer postsCount;
     private Integer followersCount;
     private Integer followingCount;
+
+
 }

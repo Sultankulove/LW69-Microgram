@@ -22,4 +22,8 @@ public class PostDto {
     private Timestamp createdAt;
 
     private boolean likedByMe;
+
+
+
+    private boolean followedByMe;
 }

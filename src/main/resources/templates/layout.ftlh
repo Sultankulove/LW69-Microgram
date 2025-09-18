@@ -33,6 +33,15 @@
         .nav-link {
             color: black;
         }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3578e5;
+            text-decoration: none;
+        }
+        .logo:hover {
+            color: #66a6ff;
+        }
     </style>
 </head>
 <body class="h-100">
@@ -41,7 +50,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col">
-                    <h1 class="h4 m-0">Microgram</h1>
+                    <a class="logo" href="/">Microgram</a>
                 </div>
                 <div class="col text-center">
                     <form class="d-flex justify-content-center">
