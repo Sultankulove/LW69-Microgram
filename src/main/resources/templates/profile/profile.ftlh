@@ -123,6 +123,65 @@
             background: linear-gradient(90deg, #3578e5 0%, #66a6ff 100%);
         }
 
+
+
+        .pub-grid{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:8px;
+            margin-top:12px;
+        }
+        @media (max-width:768px){ .pub-grid{ grid-template-columns:repeat(3,1fr); gap:4px; } }
+        @media (max-width:480px){ .pub-grid{ grid-template-columns:repeat(2,1fr); } }
+
+        .pub-item{
+            position:relative;
+            border-radius:6px;
+            overflow:hidden;
+            background:#f2f2f2;
+            cursor:pointer;
+            aspect-ratio:1/1;
+        }
+        .pub-item img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+
+
+        .pub-overlay{
+            position:absolute; inset:0;
+            background:rgba(0,0,0,.35);
+            color:#fff;
+            display:flex; align-items:center; justify-content:center;
+            gap:18px;
+            font-weight:700;
+            opacity:0; transition:opacity .18s ease;
+        }
+        .pub-item:hover .pub-overlay{ opacity:1; }
+
+        .pub-overlay i{ margin-right:6px; }
+
+
+        .pub-caption{
+            font-size:13px; color:#444; padding:6px 2px 0;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+
+
+        .lightbox{
+            position:fixed; inset:0; background:rgba(0,0,0,.85);
+            display:flex; align-items:center; justify-content:center;
+            z-index:9999; padding:20px;
+        }
+        .lightbox[hidden]{ display:none; }
+        .lightbox img{ max-width:90vw; max-height:85vh; border-radius:8px; }
+        .lightbox .close{
+            position:absolute; top:18px; right:22px;
+            color:#fff; font-size:28px; line-height:1; cursor:pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -168,20 +227,30 @@
 
 
     <div class="publications-title">Публикации</div>
-    <div class="publications">
-        <div class="publications">
-            <#list userProfileDto.posts as post>
-                <div class="publication">
-                    <img src="/api/images/image/${post.id}" alt="Публикация">
-                    <div class="publication-caption">${post.description!""}</div>
-                </div>
-            </#list>
-        </div>
 
+    <div class="pub-grid">
+        <#list userProfileDto.posts as post>
+            <div class="pub-item"
+                 data-open-lightbox
+                 data-img="/api/images/image/${post.id}"
+                 title="Открыть публикацию">
+
+                <img src="/api/images/image/${post.id}" alt="Публикация ${post?index + 1}"/>
+
+                <div class="pub-overlay">
+                    <span><i class="fa-solid fa-heart"></i>${post.likesCount!0}</span>
+                    <span><i class="fa-solid fa-comment"></i>${post.commentsCount!0}</span>
+                </div>
+            </div>
+        </#list>
     </div>
 </div>
-
+<div id="lightbox" class="lightbox" hidden>
+    <span class="close" aria-label="Закрыть">&times;</span>
+    <img id="lightboxImg" src="" alt=""/>
+</div>
 <script>
+
     function previewAvatar() {
         const input = document.getElementById("avatarInput");
         const preview = document.getElementById("avatarPreview");
@@ -195,6 +264,31 @@
             document.getElementById("avatarForm").submit();
         }
     }
+
+    document.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-open-lightbox]');
+        if (!item) return;
+        const src = item.getAttribute('data-img');
+        const lb  = document.getElementById('lightbox');
+        const img = document.getElementById('lightboxImg');
+        img.src = src;
+        lb.hidden = false;
+    });
+
+
+    document.getElementById('lightbox').addEventListener('click', (e) => {
+        if (e.target.id === 'lightbox' || e.target.classList.contains('close')) {
+            e.currentTarget.hidden = true;
+            document.getElementById('lightboxImg').src = '';
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const lb = document.getElementById('lightbox');
+            if (!lb.hidden) lb.hidden = true;
+        }
+    });
 </script>
 </body>
 
