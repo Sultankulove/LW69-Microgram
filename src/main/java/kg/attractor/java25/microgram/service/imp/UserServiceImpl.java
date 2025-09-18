@@ -2,20 +2,19 @@ package kg.attractor.java25.microgram.service.imp;
 
 import kg.attractor.java25.microgram.dto.UserProfileDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
+import kg.attractor.java25.microgram.dto.UserUpdateDto;
 import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.model.Post;
 import kg.attractor.java25.microgram.repository.FollowRepository;
 import kg.attractor.java25.microgram.repository.PostRepository;
 import kg.attractor.java25.microgram.service.FollowService;
 import kg.attractor.java25.microgram.exceptions.NotFoundException;
-import kg.attractor.java25.microgram.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import kg.attractor.java25.microgram.mapper.UserMapper;
 import kg.attractor.java25.microgram.model.User;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -175,5 +174,22 @@ public class UserServiceImpl implements UserService {
                         .likesCount(post.getLikesCount())
                         .build())
                 .toList();    }
+
+
+
+    @Override
+    public void updateUser(UserUpdateDto dto, Authentication authentication) {
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Пользователь с таким email не найден"));
+
+        user.setName(dto.getName());
+        user.setDisplayName(dto.getDisplayName());
+        user.setAvatar(dto.getAvatar());
+        user.setBio(dto.getBio());
+        userRepository.save(user);
+    }
+
 
 }

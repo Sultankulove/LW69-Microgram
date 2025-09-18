@@ -12,6 +12,7 @@ public class UserRegisterDto {
     private String email;
 
     private String username;
+    private String displayName;
 
     @NotBlank(message = "Пароль обязателен")
     private String password;

@@ -55,9 +55,13 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ResponseEntity<?> getAvatarById(Long id) {
 
+
         String avatar = userRepository.getAvatarById(id)
                 .orElseThrow(() -> new NotFoundException("Avatar for user id=" + id));
-        return FileUtil.downloadImage(avatar, AVATAR_SUB_DIR);
+        if (avatar!=null) {
+            return FileUtil.downloadImage(avatar, AVATAR_SUB_DIR);
+        }
+        return FileUtil.downloadImage("default.jpg", AVATAR_SUB_DIR);
     }
 
 
