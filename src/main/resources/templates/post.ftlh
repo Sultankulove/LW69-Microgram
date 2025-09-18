@@ -1,7 +1,6 @@
-<#import "/spring.ftl" as spring>
+<#import "layout.ftlh" as index>
+<@index.layout>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,7 +61,7 @@
         }
     </style>
 </head>
-<body>
+
 <form action="/post" method="post" enctype="multipart/form-data" class="post-container">
     <#if _csrf??>
         <input
@@ -99,5 +98,5 @@
         }
     }
 </script>
-</body>
-</html>
+
+</@index.layout>

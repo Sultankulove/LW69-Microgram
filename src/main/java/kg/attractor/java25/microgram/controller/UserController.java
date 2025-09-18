@@ -90,7 +90,6 @@
             User user = userService.findByEmail(auth.getName());
 
             UserProfileDto userProfileDto = userService.getUserProfileByUserId(user.getId());
-//                    UserMapper.ProfileDto(user,auth,userService,postService);
             model.addAttribute("userProfileDto", userProfileDto);
             return "profile/profile";
         }
@@ -110,6 +109,4 @@
             userService.updateUser(dto, auth);
             return "redirect:/auth/profile";
         }
-
-
     }

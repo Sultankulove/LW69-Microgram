@@ -4,6 +4,7 @@ import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
 import kg.attractor.java25.microgram.mapper.UserMapper;
 import kg.attractor.java25.microgram.model.Post;
+import kg.attractor.java25.microgram.repository.LikeRepository;
 import kg.attractor.java25.microgram.repository.PostRepository;
 import kg.attractor.java25.microgram.service.PostService;
 import kg.attractor.java25.microgram.service.UserService;
@@ -13,15 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserService userService;
+    private final LikeRepository likeRepository;
 
 
     @Transactional
@@ -43,9 +45,14 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getRandomPosts() {
+    public List<PostDto> getRandomPosts(Long id) {
         List<Post> posts = postRepository.findAll();
         Collections.shuffle(posts);
+
+        Set<Long> likedIds = likeRepository.findLikedPostIds(
+                id,
+                posts.stream().map(Post::getId).toList()
+        );
 
         return posts.stream()
                 .map(post -> PostDto.builder()
@@ -55,9 +62,9 @@ public class PostServiceImpl implements PostService {
                         .image(post.getImage())
                         .createdAt(post.getCreatedAt())
                         .commentsCount(post.getCommentsCount())
+                        .likedByMe(likedIds.contains(post.getId()))
                         .likesCount(post.getLikesCount())
                         .build())
-                .limit(10)
                 .toList();
     }
 
@@ -65,6 +72,11 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> getMyPosts(Long id) {
 
         List<Post> posts = postRepository.findPostByAuthor_Id(id);
+
+        Set<Long> likedIds = likeRepository.findLikedPostIds(
+                id,
+                posts.stream().map(Post::getId).toList()
+        );
         return posts.stream()
                 .map(post -> PostDto.builder()
                         .id(post.getId())
@@ -74,7 +86,9 @@ public class PostServiceImpl implements PostService {
                         .createdAt(post.getCreatedAt())
                         .commentsCount(post.getCommentsCount())
                         .likesCount(post.getLikesCount())
+                        .likedByMe(likedIds.contains(post.getId()))
                         .build())
                 .limit(10)
-                .toList();    }
+                .toList();
+    }
 }

@@ -18,9 +18,8 @@ public class MainController {
     public String index(Model model, Authentication auth) {
         var user = userService.findByEmail(auth.getName());
 
-        model.addAttribute("posts", postService.getMyPosts(user.getId()));
+        model.addAttribute("posts", postService.getRandomPosts(user.getId()));
 
-//        model.addAttribute("posts", postService.getRandomPosts());
         return "index";
     }
 }

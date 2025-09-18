@@ -39,9 +39,14 @@ public class PostController {
             dto.setAuthorId(userService.findUserIdByEmail(authentication.getName()));
         }
 
-        Long postId = postService.createPost(dto, image);
-        model.addAttribute("postId", postId);
-        model.addAttribute("post", dto);
-        return "post";
+        if (authentication.getName() != null) {
+            Long postId = postService.createPost(dto, image);
+            model.addAttribute("postId", postId);
+            model.addAttribute("post", dto);
+            return "redirect:/";
+        }
+
+        return "redirect:/";
     }
+
 }
