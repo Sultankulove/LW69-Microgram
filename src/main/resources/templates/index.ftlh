@@ -220,7 +220,8 @@
 
                         <div class="post-actions">
                             <#if post.author.id != userId && !post.followedByMe>
-                                <button class="follow-btn" data-user-id="${post.author.id}">
+                                <button class="follow-btn" data-user-id="
+                                    ${post.author.id}">
                                     Подписаться
                                 </button>
                             </#if>
