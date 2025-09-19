@@ -37,6 +37,7 @@
                 object-fit: cover;
                 border: 2px solid #38a1db;
                 margin-right: 32px;
+                background-image: url("static/images/default.jpg");
             }
 
             .profile-info {
@@ -297,23 +298,24 @@
         <div class="profile-header">
 
 
-            <form id="avatarForm" action="/api/images/avatar" method="post" enctype="multipart/form-data">
-                <label for="avatarInput" style="cursor: pointer;">
+                <div style="cursor: pointer;">
                     <img id="avatarPreview"
                          src="<#if userProfileDto.avatar?? && userProfileDto.avatar?has_content>
-              /api/images/avatar
+              /api/images/avatar/${userProfileDto.id}
           <#else>
-              /avatar/default.jpg
+          /api/images/defaultAvatar/
           </#if>"
                          alt="Avatar"
                          class="avatar">
-                </label>
-                <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display: none;"
-                       onchange="previewAvatar()">
-            </form>
+                </div>
+
 
             <div class="profile-info">
-                <div class="profile-login">${userProfileDto.displayName}</div>
+
+                <#if userProfileDto.displayName?? && userProfileDto.displayName?has_content>
+                    <div class="profile-login">${userProfileDto.displayName}</div>
+                </#if>
+
                 <h4>${userProfileDto.email}</h4>
                 <div class="profile-stats">
 
@@ -325,10 +327,6 @@
                 <#if userProfileDto.bio?? && (userProfileDto.bio?has_content)>
                     <div class="profile-bio">${userProfileDto.bio}</div>
                 </#if>
-
-
-                <a class="profile-button" href="/auth/update">Редактировать профиль</a>
-
 
             </div>
         </div>
@@ -342,8 +340,6 @@
                      data-open-lightbox
                      data-img="/api/images/image/${post.id}"
                      title="Открыть публикацию">
-                    <button type="button" class="delete-post-btn" data-del-post data-post-id="${post.id}">Удалить
-                    </button>
 
                     <img src="/api/images/image/${post.id}" alt="Публикация ${post?index + 1}"/>
 

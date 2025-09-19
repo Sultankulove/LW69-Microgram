@@ -6,13 +6,16 @@ import kg.attractor.java25.microgram.mapper.UserMapper;
 import kg.attractor.java25.microgram.model.Post;
 import kg.attractor.java25.microgram.repository.LikeRepository;
 import kg.attractor.java25.microgram.repository.PostRepository;
+import kg.attractor.java25.microgram.repository.UserRepository;
 import kg.attractor.java25.microgram.service.PostService;
 import kg.attractor.java25.microgram.service.UserService;
 import kg.attractor.java25.microgram.util.FileUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +27,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final LikeRepository likeRepository;
+    private final UserRepository userRepository;
 
 
     @Transactional
@@ -42,6 +46,24 @@ public class PostServiceImpl implements PostService {
 
 
         return saved.getId();
+    }
+
+    @Transactional
+    @Override
+    public void deletePost(Long postId, String authorEmail) {
+        var post = postRepository.findById(postId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+        var me = userRepository.findByEmail(authorEmail)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        if (!post.getAuthor().getId().equals(me.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not your post");
+        }
+
+        postRepository.delete(post);
+        me.setPostsCount(Math.max(0, me.getPostsCount() - 1));
+        userRepository.save(me);
+
     }
 
     @Override

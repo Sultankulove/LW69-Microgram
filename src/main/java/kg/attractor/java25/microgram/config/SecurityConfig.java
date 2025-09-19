@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/webjars/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/images/avatar").permitAll()
                         .requestMatchers("/api/images/avatar/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/").permitAll()
                         .anyRequest().permitAll()

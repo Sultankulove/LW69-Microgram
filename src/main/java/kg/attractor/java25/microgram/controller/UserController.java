@@ -90,8 +90,18 @@
             User user = userService.findByEmail(auth.getName());
 
             UserProfileDto userProfileDto = userService.getUserProfileByUserId(user.getId());
+
             model.addAttribute("userProfileDto", userProfileDto);
             return "profile/profile";
+        }
+
+        @GetMapping("/profile/{id}")
+        public String getProfile(@PathVariable Long id, Model model) {
+
+            UserProfileDto userProfileDto = userService.getUserProfileByUserId(id);
+            model.addAttribute("userProfileDto", userProfileDto);
+
+            return "profile/usersProfile";
         }
 
 
