@@ -27,4 +27,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User getUserById(Long id);
 
     List<User> findByNameContainingIgnoreCaseOrDisplayNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String keyword, String keyword1, String keyword2);
+
+
+    @Query("""
+            SELECT u FROM User u
+            WHERE
+              (:mode = 'EMAIL' AND LOWER(u.email) LIKE LOWER(CONCAT('%', :text, '%')))
+              OR (:mode = 'USERNAME' AND LOWER(u.name) LIKE LOWER(CONCAT('%', :text, '%')))
+              OR (:mode = 'ID' AND CAST(u.id AS string) LIKE CONCAT('%', :text, '%'))
+              OR (:mode = 'GENERAL' AND (
+                    LOWER(u.displayName) LIKE LOWER(CONCAT('%', :text, '%')) OR
+                    LOWER(u.name) LIKE LOWER(CONCAT('%', :text, '%')) OR
+                    LOWER(u.email) LIKE LOWER(CONCAT('%', :text, '%'))
+                 ))
+            """)
+    List<User> searchUsers(@Param("mode") String mode, @Param("text") String text);
 }

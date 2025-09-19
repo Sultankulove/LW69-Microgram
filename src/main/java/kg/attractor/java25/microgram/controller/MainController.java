@@ -16,10 +16,14 @@ public class MainController {
     private final UserService userService;
     @GetMapping
     public String index(Model model, Authentication auth) {
-        var user = userService.findByEmail(auth.getName());
-
-        model.addAttribute("posts", postService.getRandomPosts(user.getId()));
-        model.addAttribute("currentUserEmail", auth.getName());
+        if (auth != null && auth.isAuthenticated()) {
+            var user = userService.findByEmail(auth.getName());
+            model.addAttribute("posts", postService.getMyFollowingPosts(user.getId()));
+            model.addAttribute("userId", user.getId());
+        } else {
+            model.addAttribute("userId", -1);
+            model.addAttribute("posts", postService.getRandomPosts());
+        }
 
         return "index";
     }

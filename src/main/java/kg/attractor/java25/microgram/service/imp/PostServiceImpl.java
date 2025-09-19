@@ -3,7 +3,6 @@ package kg.attractor.java25.microgram.service.imp;
 import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
 import kg.attractor.java25.microgram.mapper.UserMapper;
-import kg.attractor.java25.microgram.model.Follow;
 import kg.attractor.java25.microgram.model.Post;
 import kg.attractor.java25.microgram.model.User;
 import kg.attractor.java25.microgram.repository.FollowRepository;
@@ -73,41 +72,65 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Override
+    public List<PostDto> getRandomPosts() {
+        List<Post> posts = postRepository.findAll();
 
-@Override
-public List<PostDto> getRandomPosts(Long currentUserId) {
-    List<Post> posts = postRepository.findAll();
-    Collections.shuffle(posts);
+        return posts.stream()
+                .map(post -> {
+                    boolean followedByMe = false;
 
-    Set<Long> likedIds = likeRepository.findLikedPostIds(
-            currentUserId,
-            posts.stream().map(Post::getId).toList()
-    );
+                    return PostDto.builder()
+                            .id(post.getId())
+                            .author(UserMapper.fromDto(post.getAuthor()))
+                            .description(post.getDescription())
+                            .image(post.getImage())
+                            .createdAt(post.getCreatedAt())
+                            .commentsCount(post.getCommentsCount())
+                            .likesCount(post.getLikesCount())
+                            .likedByMe(false)
+                            .followedByMe(followedByMe)
+                            .build();
+                })
+                .toList();    }
 
-    User currentUser = userService.getUserById(currentUserId);
 
-    return posts.stream()
-            .map(post -> {
-                boolean followedByMe = followRepository.existsByFollowerAndFollowing(
-                        currentUser,
-                        post.getAuthor()
-                );
+    @Override
+    public List<PostDto> getMyFollowingPosts(Long currentUserId) {
+        var fol = followRepository.getFollowsByFollower_Id(currentUserId);
 
-                return PostDto.builder()
-                        .id(post.getId())
-                        .author(UserMapper.fromDto(post.getAuthor()))
-                        .description(post.getDescription())
-                        .image(post.getImage())
-                        .createdAt(post.getCreatedAt())
-                        .commentsCount(post.getCommentsCount())
-                        .likesCount(post.getLikesCount())
-                        .likedByMe(likedIds.contains(post.getId()))
-                        .followedByMe(followedByMe)
-                        .build();
-            })
-            .toList();
-}
 
+        List<Post> posts = postRepository.findAll();
+        Collections.shuffle(posts);
+
+        Set<Long> likedIds = likeRepository.findLikedPostIds(
+                currentUserId,
+                posts.stream().map(Post::getId).toList()
+        );
+
+        User currentUser = userService.getUserById(currentUserId);
+
+        return posts.stream()
+                .map(post -> {
+                    boolean followedByMe = followRepository.existsByFollowerAndFollowing(
+                            currentUser,
+                            post.getAuthor()
+                    );
+
+                    return PostDto.builder()
+                            .id(post.getId())
+                            .author(UserMapper.fromDto(post.getAuthor()))
+                            .description(post.getDescription())
+                            .image(post.getImage())
+                            .createdAt(post.getCreatedAt())
+                            .commentsCount(post.getCommentsCount())
+                            .likesCount(post.getLikesCount())
+                            .likedByMe(likedIds.contains(post.getId()))
+                            .followedByMe(followedByMe)
+                            .build();
+                })
+                .toList();
+    }
 
     @Override
     public List<PostDto> getMyPosts(Long id) {
@@ -132,9 +155,4 @@ public List<PostDto> getRandomPosts(Long currentUserId) {
                 .limit(10)
                 .toList();
     }
-
-
-
-
-
 }

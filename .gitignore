@@ -33,5 +33,6 @@ build/
 .vscode/
 db
 /db/
-/data/
+
 /logs/
+/data/
