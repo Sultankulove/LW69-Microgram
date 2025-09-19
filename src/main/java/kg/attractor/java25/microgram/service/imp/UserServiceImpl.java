@@ -1,5 +1,6 @@
 package kg.attractor.java25.microgram.service.imp;
 
+import kg.attractor.java25.microgram.dto.UserDto;
 import kg.attractor.java25.microgram.dto.UserProfileDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
 import kg.attractor.java25.microgram.dto.UserUpdateDto;
@@ -33,6 +34,31 @@ public class UserServiceImpl implements UserService {
     private FollowService followService;
     private PostRepository postRepository;
     private FollowRepository followRepository;
+
+
+    @Override
+    public List<UserDto> searchUsers(String raw) {
+        String mode;
+        String text = raw.trim();
+
+        if (text.startsWith("@")) {
+            mode = "EMAIL";
+            text = text.substring(1);
+        } else if (text.startsWith("#")) {
+            mode = "USERNAME";
+            text = text.substring(1);
+        } else if (text.toUpperCase().startsWith("ID")) {
+            mode = "ID";
+            text = text.substring(2);
+        } else {
+            mode = "GENERAL";
+        }
+
+        return userRepository.searchUsers(mode, text)
+                .stream()
+                .map(UserMapper::fromDto)
+                .toList();
+    }
 
     @Override
     public User register(UserRegisterDto register) {
