@@ -218,7 +218,15 @@
 
                         <#if post.author.id != userId && !post.followedByMe>
                             <div class="post-actions">
-                                <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>
+<#--                                <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>-->
+                                <#assign _auth = (SPRING_SECURITY_CONTEXT.authentication)!>
+                                <#assign _isAuth = (_auth?? && _auth.principal?has_content && _auth.principal != 'anonymousUser')>
+                                <#if _isAuth>
+                                    <button class="follow-btn" data-user-id="${userProfileDto.id}">
+                                        Подписаться
+                                    </button>
+                                </#if>
+
                             </div>
                         </#if>
                     </div>
@@ -484,30 +492,6 @@
         }
 
 
-        // document.querySelectorAll('.follow-btn').forEach(button => {
-        //     button.addEventListener('click', function () {
-        //         const userId = this.dataset.userId;
-        //         fetch('/auth/follow/' + userId, {
-        //             method: 'POST',
-        //             headers: {[CSRF_HEADER]: CSRF_TOKEN}
-        //         })
-        //             .then(res => res.json())
-        //             .then(data => {
-        //                 this.textContent = data.following ? 'Отписаться' : 'Подписаться';
-        //             });
-        // document.querySelectorAll('.follow-btn').forEach(button => {
-        //     button.addEventListener('click', function() {
-        //         const userId = this.dataset.userId;
-        //         fetch('/auth/follow/' + userId, {
-        //             method: 'POST',
-        //             headers: { [CSRF_HEADER]: CSRF_TOKEN }
-        //         })
-        //             .then(res => res.json())
-        //             .then(data => {
-        //                 this.textContent = data.following ? 'Отписаться' : 'Подписаться';
-        //             });
-        //     });
-        // });
 
         document.querySelectorAll('.follow-btn').forEach(button => {
             button.addEventListener('click', function () {
@@ -523,8 +507,7 @@
                     });
             });
         });
-        //     });
-        // });
+
 
 
     </script>
