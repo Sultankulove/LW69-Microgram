@@ -211,26 +211,24 @@
                     <div class="post-header">
                         <img src="${avatarSrc}" alt="${post.author.username!''}">
 
-                        <strong>${post.author.username!''}</strong>
-                        <div class="post-time">${post.createdAt?string("yyyy-MM-dd")}</div>
-                    </div>
-
-
                         <a href="<#if post.author.id == userId>/auth/profile<#else>/auth/profile/${post.author.id}</#if>">
                             <strong>${post.author.username!''}</strong>
                         </a>
-
+                        <div class="post-time">${post.createdAt?string("yyyy-MM-dd")}</div>
 
                         <#if post.author.id != userId && !post.followedByMe>
                             <div class="post-actions">
                                 <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>
                             </div>
                         </#if>
-
                     </div>
 
-                    <#--                    <div class="post-actions">-->
-                    <#--                    </div>-->
+
+
+
+
+
+
 
                     <div class="post-image-wrapper">
                         <img src="${imageSrc}" alt="${post.description!'Post image'}" class="post-image">
@@ -270,6 +268,7 @@
 
         </div>
     </div>
+
 
     <div class="ig-modal" id="confirmDelete" hidden>
         <div class="backdrop" data-cancel></div>
