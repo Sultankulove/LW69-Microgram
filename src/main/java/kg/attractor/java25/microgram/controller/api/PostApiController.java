@@ -1,6 +1,7 @@
 package kg.attractor.java25.microgram.controller.api;
 
 import kg.attractor.java25.microgram.service.LikeService;
+import kg.attractor.java25.microgram.service.PostService;
 import kg.attractor.java25.microgram.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostApiController {
     private final LikeService likeService;
     private final UserService userService;
+    private final PostService postService;
 
     @PostMapping("/likes/{postId}")
     public ResponseEntity<?> like(@PathVariable Long postId, Authentication auth) {
@@ -36,4 +38,12 @@ public class PostApiController {
         );
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/posts/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long postId,
+                                           Authentication auth) {
+        postService.deletePost(postId, auth.getName());
+        return ResponseEntity.noContent().build();
+    }
+
 }

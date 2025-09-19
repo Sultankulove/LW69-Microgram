@@ -19,6 +19,14 @@ public class ImageApiController {
     private final ImageService imageService;
     private final UserService userService;
 
+    @GetMapping("/defaultAvatar")
+    public ResponseEntity<?> downloadDefaultAvatar() {
+        return imageService.getDefaultAvatar();
+    }
+
+//    @GetMapping("/avatar")
+
+
 
     @PostMapping("/image")
     public ResponseEntity<Void> uploadImage(

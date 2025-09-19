@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/images/avatar").permitAll()
                         .requestMatchers("/api/images/avatar/**").permitAll()
                         .requestMatchers("/follow/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers("/").permitAll()
                         .anyRequest().permitAll()

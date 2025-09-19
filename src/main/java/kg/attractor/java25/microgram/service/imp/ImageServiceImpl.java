@@ -39,6 +39,12 @@ public class ImageServiceImpl implements ImageService {
         return FileUtil.downloadImage(image, IMAGE);
     }
 
+    @Override
+    public ResponseEntity<?> getDefaultAvatar() {
+        // TODO
+        return null;
+    }
+
 
     @Transactional
     @Override

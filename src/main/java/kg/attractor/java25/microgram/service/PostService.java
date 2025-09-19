@@ -11,10 +11,14 @@ import java.util.List;
 
 public interface PostService {
 
+
     @Transactional
     Long createPost(PostUpsertDto dto, MultipartFile image);
 
-    List<PostDto> getRandomPosts(Long userId);
+    @Transactional
+    void deletePost(Long postId, String authorEmail);
+
+    List<PostDto> getRandomPosts(Long id);
 
     List<PostDto> getMyPosts(Long id);
 
