@@ -1,5 +1,6 @@
 package kg.attractor.java25.microgram.service;
 
+import kg.attractor.java25.microgram.dto.UserDto;
 import kg.attractor.java25.microgram.dto.UserProfileDto;
 import kg.attractor.java25.microgram.dto.UserRegisterDto;
 import kg.attractor.java25.microgram.dto.UserUpdateDto;
@@ -10,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
+    List<UserDto> searchUsers(String raw);
+
     User register (UserRegisterDto register);
 
     Long findUserIdByEmail(String name);
