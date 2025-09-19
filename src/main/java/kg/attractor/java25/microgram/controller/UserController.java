@@ -5,7 +5,9 @@
     import kg.attractor.java25.microgram.dto.UserResponseDto;
     import kg.attractor.java25.microgram.dto.UserUpdateDto;
     import kg.attractor.java25.microgram.mapper.UserMapper;
+    import kg.attractor.java25.microgram.model.Post;
     import kg.attractor.java25.microgram.model.User;
+    import kg.attractor.java25.microgram.service.FollowService;
     import kg.attractor.java25.microgram.service.PostService;
     import kg.attractor.java25.microgram.service.UserService;
     import lombok.RequiredArgsConstructor;
@@ -16,7 +18,10 @@
     import org.springframework.ui.Model;
     import org.springframework.validation.BindingResult;
     import org.springframework.web.bind.annotation.*;
+
+    import java.util.HashMap;
     import java.util.List;
+    import java.util.Map;
     import java.util.Optional;
     import java.util.stream.Collectors;
 
@@ -27,6 +32,7 @@
     public class UserController {
         private final UserService userService;
         private final PostService postService;
+        private final FollowService followService;
 
         @GetMapping("/login")
         public String login(Model model, @RequestParam(defaultValue = "false") Boolean error) {
@@ -70,17 +76,73 @@
             return ResponseEntity.ok(dto);
         }
 
-        @PostMapping("/{id}/follow")
-        public ResponseEntity<String> follow(@PathVariable("id") Long followingId, Authentication auth) {
-            userService.follow(followingId, auth);
-            return ResponseEntity.ok("Подписка выполнена");
+//        @PostMapping("/{id}/follow")
+//        public ResponseEntity<String> follow(@PathVariable("id") Long followingId, Authentication auth) {
+//            userService.follow(followingId, auth);
+//            return ResponseEntity.ok("Подписка выполнена");
+//        }
+//
+//        @PostMapping("/{id}/unfollow")
+//        public ResponseEntity<String> unfollow(@PathVariable("id") Long followingId, Authentication auth) {
+//            userService.unfollow(followingId, auth);
+//            return ResponseEntity.ok("Отписка выполнена");
+//        }
+
+
+
+
+
+
+
+
+//
+//        @PostMapping("/follow/{id}")
+//        public ResponseEntity<String> follow(@PathVariable("id") Long followingId, Authentication auth) {
+//            User follower = userService.findByEmail(auth.getName());
+//            User following = userService.getById(followingId);
+//
+//            followService.follow(follower, following);
+//
+//            return ResponseEntity.ok("Подписка выполнена");
+//        }
+
+
+        @PostMapping("/follow/{id}")
+        public ResponseEntity<Map<String, Boolean>> follow(@PathVariable("id") Long followingId, Authentication auth) {
+            User follower = userService.findByEmail(auth.getName());
+            User following = userService.getById(followingId);
+
+            boolean followingNow;
+            if (followService.isFollowing(follower, following)) {
+                // уже подписан — отписываемся
+                followService.unfollow(follower, following);
+                followingNow = false;
+            } else {
+                // подписываемся
+                followService.follow(follower, following);
+                followingNow = true;
+            }
+
+            Map<String, Boolean> result = new HashMap<>();
+            result.put("following", followingNow);
+            return ResponseEntity.ok(result);
         }
 
-        @PostMapping("/{id}/unfollow")
+        @PostMapping("/unfollow/{id}")
         public ResponseEntity<String> unfollow(@PathVariable("id") Long followingId, Authentication auth) {
-            userService.unfollow(followingId, auth);
+            User follower = userService.findByEmail(auth.getName());
+            User following = userService.getById(followingId);
+
+            followService.unfollow(follower, following);
+
             return ResponseEntity.ok("Отписка выполнена");
         }
+
+
+
+
+
+
 
 
         @GetMapping("/profile")
@@ -109,4 +171,7 @@
             userService.updateUser(dto, auth);
             return "redirect:/auth/profile";
         }
+
+
+
     }

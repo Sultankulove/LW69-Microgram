@@ -3,7 +3,10 @@ package kg.attractor.java25.microgram.service.imp;
 import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
 import kg.attractor.java25.microgram.mapper.UserMapper;
+import kg.attractor.java25.microgram.model.Follow;
 import kg.attractor.java25.microgram.model.Post;
+import kg.attractor.java25.microgram.model.User;
+import kg.attractor.java25.microgram.repository.FollowRepository;
 import kg.attractor.java25.microgram.repository.LikeRepository;
 import kg.attractor.java25.microgram.repository.PostRepository;
 import kg.attractor.java25.microgram.service.PostService;
@@ -24,6 +27,7 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final LikeRepository likeRepository;
+    private  final FollowRepository followRepository;
 
 
     @Transactional
@@ -91,4 +95,9 @@ public class PostServiceImpl implements PostService {
                 .limit(10)
                 .toList();
     }
+
+
+
+
+
 }

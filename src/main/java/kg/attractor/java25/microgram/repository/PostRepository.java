@@ -1,6 +1,7 @@
 package kg.attractor.java25.microgram.repository;
 
 import kg.attractor.java25.microgram.model.Post;
+import kg.attractor.java25.microgram.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<String> getImageById(@Param("id") Long id);
 
     List<Post> findPostByAuthor_Id(Long authorId);
+
+
 }

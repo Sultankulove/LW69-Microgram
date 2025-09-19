@@ -272,6 +272,7 @@
                     <span class="profile-stat">${userProfileDto.posts?size} публикации</span>
                     <div class="profile-stat"><span>${userProfileDto.followersCount}</span> подписчиков</div>
                     <div class="profile-stat"><span>${userProfileDto.followingCount}</span> подписки</div>
+
                 </div>
                 <div class="profile-name">${userProfileDto.username}</div>
                 <#if userProfileDto.bio?? && (userProfileDto.bio?has_content)>
