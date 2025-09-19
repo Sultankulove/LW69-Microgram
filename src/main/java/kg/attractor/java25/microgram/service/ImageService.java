@@ -13,4 +13,5 @@ public interface ImageService {
 
     ResponseEntity<?> downloadImageByPostId(Long postId);
 
+    ResponseEntity<?> getDefaultAvatar();
 }
