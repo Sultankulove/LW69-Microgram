@@ -153,8 +153,8 @@ public class UserServiceImpl implements UserService {
         userProfileDto.setAvatar(user.getAvatar());
 
         userProfileDto.setPostsCount(user.getPostsCount());
-        userProfileDto.setFollowersCount(user.getFollowersCount());
-        userProfileDto.setFollowingCount(user.getFollowingCount());
+        userProfileDto.setFollowersCount(followService.countFollowers(user));
+        userProfileDto.setFollowingCount(followService.countFollowing(user));
 
         userProfileDto.setPosts(getMyPosts(id));
         return userProfileDto;

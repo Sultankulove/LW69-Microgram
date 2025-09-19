@@ -1,6 +1,7 @@
 package kg.attractor.java25.microgram.mapper;
 
 import kg.attractor.java25.microgram.dto.*;
+import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.model.User;
 import kg.attractor.java25.microgram.service.PostService;
 import kg.attractor.java25.microgram.service.UserService;
@@ -46,6 +47,29 @@ public class UserMapper {
         return user;
     }
 
+//    public static UserProfileDto ProfileDto(User user, Authentication auth, UserService userService, PostService postService) {
+//        if (user == null) return null;
+//        UserProfileDto userProfileDto = new UserProfileDto();
+//        userProfileDto.setId(user.getId());
+//        userProfileDto.setUsername(user.getName());
+//        userProfileDto.setDisplayName(user.getDisplayName());
+//        userProfileDto.setBio(user.getBio());
+//        userProfileDto.setEmail(user.getEmail());
+//        userProfileDto.setAvatar(user.getAvatar());
+//
+//        userProfileDto.setPostsCount(userService.getPostsCount(user));
+//        user.setFollowersCount(userService.getFollowersCount(user));
+//        user.setFollowingCount(userService.getFollowingCount(user));
+//
+//        if (auth != null) {
+//            User currentUser = userService.findByEmail(auth.getName());
+//            userProfileDto.setFollowing(userService.isFollowing(currentUser, user));
+//        }
+//
+//        return userProfileDto;
+//    }
+
+
     public static UserProfileDto ProfileDto(User user, Authentication auth, UserService userService, PostService postService) {
         if (user == null) return null;
         UserProfileDto userProfileDto = new UserProfileDto();
@@ -56,9 +80,12 @@ public class UserMapper {
         userProfileDto.setEmail(user.getEmail());
         userProfileDto.setAvatar(user.getAvatar());
 
+        // количество постов
         userProfileDto.setPostsCount(userService.getPostsCount(user));
-        user.setFollowersCount(userService.getFollowersCount(user));
-        user.setFollowingCount(userService.getFollowingCount(user));
+        // количество подписчиков
+        userProfileDto.setFollowersCount(userService.getFollowersCount(user));
+        // количество подписок
+        userProfileDto.setFollowingCount(userService.getFollowingCount(user));
 
         if (auth != null) {
             User currentUser = userService.findByEmail(auth.getName());
@@ -67,6 +94,8 @@ public class UserMapper {
 
         return userProfileDto;
     }
+
+
     public static UserDto fromDto(User user) {
         if (user == null) return null;
 

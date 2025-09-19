@@ -39,7 +39,8 @@ public class FollowingServiceImp implements FollowService {
     @Override
     public void unfollow(User follower, User following) {
         log.info("Пользователь {} отписывается от {}", follower.getId(), following.getId());
-        followRepository.findByFollowerAndFollowing(follower, following);
+        followRepository.findByFollowerAndFollowing(follower, following)
+                .ifPresent(followRepository::delete);
 
     }
 
