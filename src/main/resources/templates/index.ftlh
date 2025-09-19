@@ -216,7 +216,7 @@
                         </a>
 
 
-                        <#if post.author.email != currentUserEmail && !post.followedByMe>
+                        <#if post.author.id != userId && !post.followedByMe>
                             <div class="post-actions">
                                 <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>
                             </div>
@@ -491,34 +491,34 @@
         //             .then(data => {
         //                 this.textContent = data.following ? 'Отписаться' : 'Подписаться';
         //             });
-                // document.querySelectorAll('.follow-btn').forEach(button => {
-                //     button.addEventListener('click', function() {
-                //         const userId = this.dataset.userId;
-                //         fetch('/auth/follow/' + userId, {
-                //             method: 'POST',
-                //             headers: { [CSRF_HEADER]: CSRF_TOKEN }
-                //         })
-                //             .then(res => res.json())
-                //             .then(data => {
-                //                 this.textContent = data.following ? 'Отписаться' : 'Подписаться';
-                //             });
-                //     });
-                // });
+        // document.querySelectorAll('.follow-btn').forEach(button => {
+        //     button.addEventListener('click', function() {
+        //         const userId = this.dataset.userId;
+        //         fetch('/auth/follow/' + userId, {
+        //             method: 'POST',
+        //             headers: { [CSRF_HEADER]: CSRF_TOKEN }
+        //         })
+        //             .then(res => res.json())
+        //             .then(data => {
+        //                 this.textContent = data.following ? 'Отписаться' : 'Подписаться';
+        //             });
+        //     });
+        // });
 
-                document.querySelectorAll('.follow-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const userId = this.dataset.userId;
-                        fetch('/auth/follow/' + userId, {
-                            method: 'POST',
-                            headers: {[CSRF_HEADER]: CSRF_TOKEN}
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                // Меняем текст кнопки в зависимости от того, подписан ли сейчас
-                                this.textContent = data.following ? 'Отписаться' : 'Подписаться';
-                            });
+        document.querySelectorAll('.follow-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.dataset.userId;
+                fetch('/auth/follow/' + userId, {
+                    method: 'POST',
+                    headers: {[CSRF_HEADER]: CSRF_TOKEN}
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Меняем текст кнопки в зависимости от того, подписан ли сейчас
+                        this.textContent = data.following ? 'Отписаться' : 'Подписаться';
                     });
-                });
+            });
+        });
         //     });
         // });
 

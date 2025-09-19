@@ -73,7 +73,30 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getRandomPosts(Long currentUserId) {
+    public List<PostDto> getRandomPosts() {
+        List<Post> posts = postRepository.findAll();
+
+        return posts.stream()
+                .map(post -> {
+                    boolean followedByMe = false;
+
+                    return PostDto.builder()
+                            .id(post.getId())
+                            .author(UserMapper.fromDto(post.getAuthor()))
+                            .description(post.getDescription())
+                            .image(post.getImage())
+                            .createdAt(post.getCreatedAt())
+                            .commentsCount(post.getCommentsCount())
+                            .likesCount(post.getLikesCount())
+                            .likedByMe(false)
+                            .followedByMe(followedByMe)
+                            .build();
+                })
+                .toList();    }
+
+
+    @Override
+    public List<PostDto> getMyFollowingRandomPosts(Long currentUserId) {
         List<Post> posts = postRepository.findAll();
         Collections.shuffle(posts);
 
@@ -129,9 +152,4 @@ public class PostServiceImpl implements PostService {
                 .limit(10)
                 .toList();
     }
-
-
-
-
-
 }
