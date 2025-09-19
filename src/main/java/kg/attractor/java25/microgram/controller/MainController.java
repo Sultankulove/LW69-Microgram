@@ -24,6 +24,10 @@ public class MainController {
             model.addAttribute("userId", -1);
             model.addAttribute("posts", postService.getRandomPosts());
         }
+        var user = userService.findByEmail(auth.getName());
+
+//        model.addAttribute("posts", postService.getRandomPosts(user.getId()));
+//        model.addAttribute("currentUserEmail", auth.getName());
 
         return "index";
     }
