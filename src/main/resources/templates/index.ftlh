@@ -211,6 +211,11 @@
                     <div class="post-header">
                         <img src="${avatarSrc}" alt="${post.author.username!''}">
 
+                        <strong>${post.author.username!''}</strong>
+                        <div class="post-time">${post.createdAt?string("yyyy-MM-dd")}</div>
+                    </div>
+
+
                         <a href="<#if post.author.id == userId>/auth/profile<#else>/auth/profile/${post.author.id}</#if>">
                             <strong>${post.author.username!''}</strong>
                         </a>

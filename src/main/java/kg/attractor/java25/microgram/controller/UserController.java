@@ -1,10 +1,8 @@
     package kg.attractor.java25.microgram.controller;
     import jakarta.validation.Valid;
-    import kg.attractor.java25.microgram.dto.UserProfileDto;
-    import kg.attractor.java25.microgram.dto.UserRegisterDto;
-    import kg.attractor.java25.microgram.dto.UserResponseDto;
-    import kg.attractor.java25.microgram.dto.UserUpdateDto;
+    import kg.attractor.java25.microgram.dto.*;
     import kg.attractor.java25.microgram.mapper.UserMapper;
+    import kg.attractor.java25.microgram.model.Follow;
     import kg.attractor.java25.microgram.model.Post;
     import kg.attractor.java25.microgram.model.User;
     import kg.attractor.java25.microgram.service.FollowService;
@@ -76,35 +74,52 @@
             return ResponseEntity.ok(dto);
         }
 
-//        @PostMapping("/{id}/follow")
-//        public ResponseEntity<String> follow(@PathVariable("id") Long followingId, Authentication auth) {
-//            userService.follow(followingId, auth);
-//            return ResponseEntity.ok("Подписка выполнена");
-//        }
-//
-//        @PostMapping("/{id}/unfollow")
-//        public ResponseEntity<String> unfollow(@PathVariable("id") Long followingId, Authentication auth) {
-//            userService.unfollow(followingId, auth);
-//            return ResponseEntity.ok("Отписка выполнена");
-//        }
+//@GetMapping("profile/{id}/followers")
+//public String followers(@PathVariable Long id, Model model) {
+//            User user = userService.getById(id);
+//            List<Follow> followers = followService.getFollower(user);
+//            model.addAttribute("followers", followers);
+//            return "followers";
+//}
+
+        @GetMapping("profile/{id}/followers")
+        public String followers(@PathVariable Long id, Model model) {
+            User user = userService.getById(id);
+            List<Follow> followers = followService.getFollower(user);
 
 
+            UserFollowerDto ownerDto = UserMapper.toFollowerDto(user);
 
 
+            List<UserFollowerDto> followerDtos = followers.stream()
+                    .map(f -> UserMapper.toFollowerDto(f.getFollower()))
+                    .toList();
+
+            model.addAttribute("owner", ownerDto);
+            model.addAttribute("followers", followerDtos);
+            return "followers";
+        }
+
+        @GetMapping("profile/{id}/following")
+        public String following(@PathVariable Long id, Model model) {
+            User user = userService.getById(id);
 
 
+            List<Follow> followings = followService.getFollowing(user);
 
 
-//
-//        @PostMapping("/follow/{id}")
-//        public ResponseEntity<String> follow(@PathVariable("id") Long followingId, Authentication auth) {
-//            User follower = userService.findByEmail(auth.getName());
-//            User following = userService.getById(followingId);
-//
-//            followService.follow(follower, following);
-//
-//            return ResponseEntity.ok("Подписка выполнена");
-//        }
+            UserFollowerDto ownerDto = UserMapper.toFollowerDto(user);
+
+
+            List<UserFollowerDto> followingDtos = followings.stream()
+                    .map(f -> UserMapper.toFollowerDto(f.getFollowing()))
+                    .toList();
+
+            model.addAttribute("owner", ownerDto);
+            model.addAttribute("following", followingDtos);
+            return "following";
+        }
+
 
 
         @PostMapping("/follow/{id}")

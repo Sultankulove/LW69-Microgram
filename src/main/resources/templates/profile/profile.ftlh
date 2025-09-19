@@ -290,6 +290,20 @@
             }
             .modal-card .btn-cancel{ background:#e9ecef; color:#222; }
             .modal-card .btn-danger{ background:#e03131; color:#fff; }
+
+
+            .profile-stat a {
+                text-decoration: none;
+                color: inherit;
+            }
+
+
+            .profile-stat a:hover {
+                color: #262626;
+            }
+
+
+
         </style>
     </head>
     <body>
@@ -303,7 +317,7 @@
                          src="<#if userProfileDto.avatar?? && userProfileDto.avatar?has_content>
               /api/images/avatar
           <#else>
-              /avatar/default.jpg
+              /images/default.jpg
           </#if>"
                          alt="Avatar"
                          class="avatar">
@@ -318,8 +332,21 @@
                 <div class="profile-stats">
 
                     <span class="profile-stat">${userProfileDto.posts?size} публикации</span>
-                    <div class="profile-stat"><span>${userProfileDto.followersCount}</span> подписчиков</div>
-                    <div class="profile-stat"><span>${userProfileDto.followingCount}</span> подписки</div>
+
+                    <div class="profile-stat">
+                        <a href="/auth/profile/${userProfileDto.id}/followers">
+                            <span>${userProfileDto.followersCount}</span> подписчиков
+                        </a>
+                    </div>
+
+
+                    <div class="profile-stat">
+                        <a href="/auth/profile/${userProfileDto.id}/following">
+                            <span>${userProfileDto.followingCount}</span> подписки
+                        </a>
+                    </div>
+
+<#--                    <div class="profile-stat"><span>${userProfileDto.followingCount}</span> подписки</div>-->
 
                 </div>
                 <div class="profile-name">${userProfileDto.username}</div>
