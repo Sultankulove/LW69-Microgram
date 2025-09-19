@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,5 +30,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("delete from Post p where p.id = :id and p.author.id = :authorId")
     int deleteByIdAndAuthorId(@Param("id") Long id, @Param("authorId") Long authorId);
 
+    List<Post> findByAuthor_IdInOrderByCreatedAtDesc(Collection<Long> authorIds);
 
+     List<Post> findByAuthor_IdInOrAuthor_IdOrderByCreatedAtDesc(Collection<Long> authorIds, Long selfId);
 }

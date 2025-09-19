@@ -4,7 +4,6 @@ import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
 import kg.attractor.java25.microgram.mapper.UserMapper;
 import kg.attractor.java25.microgram.model.Post;
-import kg.attractor.java25.microgram.model.User;
 import kg.attractor.java25.microgram.repository.FollowRepository;
 import kg.attractor.java25.microgram.repository.LikeRepository;
 import kg.attractor.java25.microgram.repository.PostRepository;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -95,42 +93,40 @@ public class PostServiceImpl implements PostService {
                 .toList();    }
 
 
+
     @Override
     public List<PostDto> getMyFollowingPosts(Long currentUserId) {
-        var fol = followRepository.getFollowsByFollower_Id(currentUserId);
 
+        List<Long> followingIds = followRepository
+                .getFollowsByFollower_Id(currentUserId)
+                .stream()
+                .map(f -> f.getFollowing().getId())
+                .toList();
 
-        List<Post> posts = postRepository.findAll();
-        Collections.shuffle(posts);
+        if (followingIds.isEmpty()) return List.of();
+
+        List<Post> posts = postRepository.findByAuthor_IdInOrderByCreatedAtDesc(followingIds);
 
         Set<Long> likedIds = likeRepository.findLikedPostIds(
                 currentUserId,
                 posts.stream().map(Post::getId).toList()
         );
 
-        User currentUser = userService.getUserById(currentUserId);
-
         return posts.stream()
-                .map(post -> {
-                    boolean followedByMe = followRepository.existsByFollowerAndFollowing(
-                            currentUser,
-                            post.getAuthor()
-                    );
-
-                    return PostDto.builder()
-                            .id(post.getId())
-                            .author(UserMapper.fromDto(post.getAuthor()))
-                            .description(post.getDescription())
-                            .image(post.getImage())
-                            .createdAt(post.getCreatedAt())
-                            .commentsCount(post.getCommentsCount())
-                            .likesCount(post.getLikesCount())
-                            .likedByMe(likedIds.contains(post.getId()))
-                            .followedByMe(followedByMe)
-                            .build();
-                })
+                .map(p -> PostDto.builder()
+                        .id(p.getId())
+                        .author(UserMapper.fromDto(p.getAuthor()))
+                        .description(p.getDescription())
+                        .image(p.getImage())
+                        .createdAt(p.getCreatedAt())
+                        .commentsCount(p.getCommentsCount())
+                        .likesCount(p.getLikesCount())
+                        .likedByMe(likedIds.contains(p.getId()))
+                        .followedByMe(true)
+                        .build())
                 .toList();
     }
+
 
     @Override
     public List<PostDto> getMyPosts(Long id) {
