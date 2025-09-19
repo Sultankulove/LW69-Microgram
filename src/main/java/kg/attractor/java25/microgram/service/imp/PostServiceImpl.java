@@ -3,9 +3,7 @@ package kg.attractor.java25.microgram.service.imp;
 import kg.attractor.java25.microgram.dto.image.PostDto;
 import kg.attractor.java25.microgram.dto.image.PostUpsertDto;
 import kg.attractor.java25.microgram.mapper.UserMapper;
-import kg.attractor.java25.microgram.model.Follow;
 import kg.attractor.java25.microgram.model.Post;
-import kg.attractor.java25.microgram.model.User;
 import kg.attractor.java25.microgram.repository.FollowRepository;
 import kg.attractor.java25.microgram.repository.LikeRepository;
 import kg.attractor.java25.microgram.repository.PostRepository;
@@ -74,7 +72,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getRandomPosts(Long id) {
+    public List<PostDto> getRandomPosts() {
+        List<Post> posts = postRepository.findAll();
+        Collections.shuffle(posts);
+
+        return posts.stream()
+                .map(post -> PostDto.builder()
+                        .id(post.getId())
+                        .author(UserMapper.fromDto(post.getAuthor()))
+                        .description(post.getDescription())
+                        .image(post.getImage())
+                        .createdAt(post.getCreatedAt())
+                        .commentsCount(post.getCommentsCount())
+                        .likesCount(post.getLikesCount())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<PostDto> getMyFollowingRandomPosts(Long id) {
         List<Post> posts = postRepository.findAll();
         Collections.shuffle(posts);
 

@@ -94,6 +94,15 @@
             .ig-modal .btn.gray{background:#efefef}
             .ig-modal .btn.danger{background:#ed4956; color:#fff}
 
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            a:hover, a:focus {
+                text-decoration: none;
+                color: inherit;
+            }
         </style>
     </head>
     <div class="container">
@@ -107,14 +116,20 @@
                 <div class="post-card">
                     <div class="post-header">
                         <img src="${avatarSrc}" alt="${post.author.username!''}">
-                        <a href=""></a>
-                        <strong>${post.author.username!''}</strong>
+
+                        <a href="<#if post.author.id == userId>/auth/profile<#else>/auth/profile/${post.author.id}</#if>">
+                            <strong>${post.author.username!''}</strong>
+                        </a>
+
+
+
                         <div class="post-time">${post.createdAt?string("yyyy-MM-dd")}</div>
+                        <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>
+
                     </div>
 
-                    <div class="post-actions">
-                        <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>
-                    </div>
+<#--                    <div class="post-actions">-->
+<#--                    </div>-->
 
                     <div class="post-image-wrapper">
                         <img src="${imageSrc}" alt="${post.description!'Post image'}" class="post-image">

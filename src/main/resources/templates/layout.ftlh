@@ -12,6 +12,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <style>
         .wrapper {
@@ -59,11 +60,24 @@
                 </div>
                 <div class="col text-end">
                     <nav>
+                        <form action="/logout" method="post">
+                            <#if _csrf??>
+                                <input
+                                        type="hidden"
+                                        name="${(_csrf.parameterName)!'csrf-param-name'}"
+                                        value="${(_csrf.token)!'csrf-token'}"/>
+
+                            </#if>
                         <a href="/" class="nav-link d-inline-block mx-2"><i class="fas fa-home"></i></a>
 <#--                        <a href="#" class="nav-link d-inline-block mx-2"><i class="far fa-paper-plane"></i></a>-->
                         <a href="/post" class="nav-link d-inline-block mx-2"><i class="far fa-plus-square"></i></a>
 <#--                        <a href="#" class="nav-link d-inline-block mx-2"><i class="far fa-compass"></i></a>-->
                         <a href="/auth/profile" class="nav-link d-inline-block mx-2"><i class="far fa-user"></i></a>
+                            <button type="submit" class="nav-link d-inline-block mx-2">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </button>
+                        </form>
+
                     </nav>
                 </div>
             </div>
