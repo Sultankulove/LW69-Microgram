@@ -112,7 +112,7 @@
                     </div>
 
 
-\]
+
 
                     <#if post.author.email != currentUserEmail && !post.followedByMe>
                         <div class="post-actions">

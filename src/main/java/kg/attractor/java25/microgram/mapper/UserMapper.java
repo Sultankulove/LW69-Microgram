@@ -130,5 +130,14 @@ public class UserMapper {
         return dto;
     }
 
+    public static UserFollowerDto toFollowerDto(User user) {
+        if (user == null) return null;
+        return new UserFollowerDto(
+                user.getId(),
+                user.getName(),
+                user.getDisplayName(),
+                user.getAvatar()
+        );
+    }
 }
 
