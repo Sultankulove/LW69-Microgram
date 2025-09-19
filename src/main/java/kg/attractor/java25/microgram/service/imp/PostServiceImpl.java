@@ -73,29 +73,41 @@ public class PostServiceImpl implements PostService {
 
     }
 
-    @Override
-    public List<PostDto> getRandomPosts(Long id) {
-        List<Post> posts = postRepository.findAll();
-        Collections.shuffle(posts);
 
-        Set<Long> likedIds = likeRepository.findLikedPostIds(
-                id,
-                posts.stream().map(Post::getId).toList()
-        );
+@Override
+public List<PostDto> getRandomPosts(Long currentUserId) {
+    List<Post> posts = postRepository.findAll();
+    Collections.shuffle(posts);
 
-        return posts.stream()
-                .map(post -> PostDto.builder()
+    Set<Long> likedIds = likeRepository.findLikedPostIds(
+            currentUserId,
+            posts.stream().map(Post::getId).toList()
+    );
+
+    User currentUser = userService.getUserById(currentUserId);
+
+    return posts.stream()
+            .map(post -> {
+                boolean followedByMe = followRepository.existsByFollowerAndFollowing(
+                        currentUser,
+                        post.getAuthor()
+                );
+
+                return PostDto.builder()
                         .id(post.getId())
                         .author(UserMapper.fromDto(post.getAuthor()))
                         .description(post.getDescription())
                         .image(post.getImage())
                         .createdAt(post.getCreatedAt())
                         .commentsCount(post.getCommentsCount())
-                        .likedByMe(likedIds.contains(post.getId()))
                         .likesCount(post.getLikesCount())
-                        .build())
-                .toList();
-    }
+                        .likedByMe(likedIds.contains(post.getId()))
+                        .followedByMe(followedByMe)
+                        .build();
+            })
+            .toList();
+}
+
 
     @Override
     public List<PostDto> getMyPosts(Long id) {

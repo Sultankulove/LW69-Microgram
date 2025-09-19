@@ -19,6 +19,7 @@ public class MainController {
         var user = userService.findByEmail(auth.getName());
 
         model.addAttribute("posts", postService.getRandomPosts(user.getId()));
+        model.addAttribute("currentUserEmail", auth.getName());
 
         return "index";
     }

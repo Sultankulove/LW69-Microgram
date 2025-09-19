@@ -114,11 +114,11 @@
 
             boolean followingNow;
             if (followService.isFollowing(follower, following)) {
-                // уже подписан — отписываемся
+
                 followService.unfollow(follower, following);
                 followingNow = false;
             } else {
-                // подписываемся
+
                 followService.follow(follower, following);
                 followingNow = true;
             }
