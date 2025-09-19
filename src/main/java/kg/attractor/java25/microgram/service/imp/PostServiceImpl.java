@@ -96,7 +96,10 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public List<PostDto> getMyFollowingRandomPosts(Long currentUserId) {
+    public List<PostDto> getMyFollowingPosts(Long currentUserId) {
+        var fol = followRepository.getFollowsByFollower_Id(currentUserId);
+
+
         List<Post> posts = postRepository.findAll();
         Collections.shuffle(posts);
 

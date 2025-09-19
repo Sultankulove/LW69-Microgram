@@ -18,7 +18,7 @@ public class MainController {
     public String index(Model model, Authentication auth) {
         if (auth != null && auth.isAuthenticated()) {
             var user = userService.findByEmail(auth.getName());
-            model.addAttribute("posts", postService.getMyFollowingRandomPosts(user.getId()));
+            model.addAttribute("posts", postService.getMyFollowingPosts(user.getId()));
             model.addAttribute("userId", user.getId());
         } else {
             model.addAttribute("userId", -1);

@@ -18,7 +18,7 @@ public interface PostService {
 
     List<PostDto> getRandomPosts();
 
-    List<PostDto> getMyFollowingRandomPosts(Long id);
+    List<PostDto> getMyFollowingPosts(Long id);
 
     List<PostDto> getMyPosts(Long id);
 
