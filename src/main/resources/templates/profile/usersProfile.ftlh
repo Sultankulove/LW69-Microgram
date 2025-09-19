@@ -262,35 +262,64 @@
                 opacity: 1;
             }
 
-            .modal-backdrop{
-                position:fixed; inset:0;
-                background:rgba(0,0,0,.5);
-                display:flex; align-items:center; justify-content:center;
-                z-index:10000;
+            .modal-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
             }
-            .modal-backdrop[hidden]{ display:none; }
 
-            .modal-card{
-                width:320px; max-width:90vw;
-                background:#fff; border-radius:10px;
-                box-shadow:0 10px 30px rgba(0,0,0,.25);
-                overflow:hidden;
+            .modal-backdrop[hidden] {
+                display: none;
             }
-            .modal-card .modal-header{
-                padding:14px 16px; font-weight:700; border-bottom:1px solid #eee;
+
+            .modal-card {
+                width: 320px;
+                max-width: 90vw;
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+                overflow: hidden;
             }
-            .modal-card .modal-body{
-                padding:14px 16px; color:#333;
+
+            .modal-card .modal-header {
+                padding: 14px 16px;
+                font-weight: 700;
+                border-bottom: 1px solid #eee;
             }
-            .modal-card .modal-actions{
-                display:flex; gap:8px; justify-content:flex-end;
-                padding:12px 16px; border-top:1px solid #eee;
+
+            .modal-card .modal-body {
+                padding: 14px 16px;
+                color: #333;
             }
-            .modal-card .btn{
-                padding:6px 12px; border-radius:6px; border:0; cursor:pointer;
+
+            .modal-card .modal-actions {
+                display: flex;
+                gap: 8px;
+                justify-content: flex-end;
+                padding: 12px 16px;
+                border-top: 1px solid #eee;
             }
-            .modal-card .btn-cancel{ background:#e9ecef; color:#222; }
-            .modal-card .btn-danger{ background:#e03131; color:#fff; }
+
+            .modal-card .btn {
+                padding: 6px 12px;
+                border-radius: 6px;
+                border: 0;
+                cursor: pointer;
+            }
+
+            .modal-card .btn-cancel {
+                background: #e9ecef;
+                color: #222;
+            }
+
+            .modal-card .btn-danger {
+                background: #e03131;
+                color: #fff;
+            }
         </style>
     </head>
     <body>
@@ -298,16 +327,16 @@
         <div class="profile-header">
 
 
-                <div style="cursor: pointer;">
-                    <img id="avatarPreview"
-                         src="<#if userProfileDto.avatar?? && userProfileDto.avatar?has_content>
+            <div style="cursor: pointer;">
+                <img id="avatarPreview"
+                     src="<#if userProfileDto.avatar?? && userProfileDto.avatar?has_content>
               /api/images/avatar/${userProfileDto.id}
           <#else>
           /api/images/defaultAvatar/
           </#if>"
-                         alt="Avatar"
-                         class="avatar">
-                </div>
+                     alt="Avatar"
+                     class="avatar">
+            </div>
 
 
             <div class="profile-info">
@@ -323,6 +352,13 @@
                     <div class="profile-stat"><span>${userProfileDto.followersCount}</span> подписчиков</div>
                     <div class="profile-stat"><span>${userProfileDto.followingCount}</span> подписки</div>
                 </div>
+
+                <div>
+                        <button class="follow-btn" data-user-id="${userProfileDto.id}">
+                            Подписаться
+                        </button>
+                </div>
+
                 <div class="profile-name">${userProfileDto.username}</div>
                 <#if userProfileDto.bio?? && (userProfileDto.bio?has_content)>
                     <div class="profile-bio">${userProfileDto.bio}</div>
@@ -368,7 +404,7 @@
     </div>
 
     <script>
-        const CSRF_TOKEN  = document.querySelector('meta[name="_csrf"]')?.content;
+        const CSRF_TOKEN = document.querySelector('meta[name="_csrf"]')?.content;
         const CSRF_HEADER = document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN';
 
         function previewAvatar() {
@@ -395,7 +431,7 @@
             if (!item) return;
 
             const src = item.getAttribute('data-img');
-            const lb  = document.getElementById('lightbox');
+            const lb = document.getElementById('lightbox');
             const img = document.getElementById('lightboxImg');
             img.src = src;
             lb.hidden = false;
@@ -415,18 +451,19 @@
             }
         });
 
-        const modal   = document.getElementById('deleteModal');
-        const btnYes  = modal.querySelector('[data-modal-confirm]');
-        const btnNo   = modal.querySelector('[data-modal-cancel]');
-        let pending = { postId: null, button: null };
+        const modal = document.getElementById('deleteModal');
+        const btnYes = modal.querySelector('[data-modal-confirm]');
+        const btnNo = modal.querySelector('[data-modal-cancel]');
+        let pending = {postId: null, button: null};
 
-        function openDeleteModal(postId, button){
-            pending = { postId, button };
+        function openDeleteModal(postId, button) {
+            pending = {postId, button};
             modal.hidden = false;
         }
-        function closeDeleteModal(){
+
+        function closeDeleteModal() {
             modal.hidden = true;
-            pending = { postId: null, button: null };
+            pending = {postId: null, button: null};
         }
 
         document.addEventListener('click', (e) => {
@@ -453,7 +490,7 @@
             try {
                 const res = await fetch('/api/posts/' + pending.postId, {
                     method: 'DELETE',
-                    headers: { [CSRF_HEADER]: CSRF_TOKEN }
+                    headers: {[CSRF_HEADER]: CSRF_TOKEN}
                 });
 
                 if (res.status === 204) {
@@ -470,6 +507,21 @@
                 alert('Сеть недоступна');
             }
         });
+
+        document.querySelectorAll('.follow-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.dataset.userId;
+                fetch('/auth/follow/' + userId, {
+                    method: 'POST',
+                    headers: {[CSRF_HEADER]: CSRF_TOKEN}
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        this.textContent = data.following ? 'Отписаться' : 'Подписаться';
+                    });
+            });
+        });
+
     </script>
     </body>
 

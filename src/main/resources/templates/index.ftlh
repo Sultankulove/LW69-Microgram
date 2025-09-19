@@ -1,3 +1,4 @@
+<#import "spring.ftl" as spring>
 <#import "layout.ftlh" as index>
 <@index.layout>
 
@@ -216,26 +217,16 @@
                         </a>
                         <div class="post-time">${post.createdAt?string("yyyy-MM-dd")}</div>
 
-                        <#if post.author.id != userId && !post.followedByMe>
-                            <div class="post-actions">
-<#--                                <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>-->
-                                <#assign _auth = (SPRING_SECURITY_CONTEXT.authentication)!>
-                                <#assign _isAuth = (_auth?? && _auth.principal?has_content && _auth.principal != 'anonymousUser')>
-                                <#if _isAuth>
-                                    <button class="follow-btn" data-user-id="${userProfileDto.id}">
-                                        Подписаться
-                                    </button>
-                                </#if>
 
-                            </div>
-                        </#if>
+                        <div class="post-actions">
+                            <#if post.author.id != userId && !post.followedByMe>
+                                <button class="follow-btn" data-user-id="${post.author.id}">
+                                    Подписаться
+                                </button>
+                            </#if>
+<#--                            <button class="follow-btn" data-user-id="${post.author.id}">Подписаться</button>-->
+                        </div>
                     </div>
-
-
-
-
-
-
 
 
                     <div class="post-image-wrapper">
@@ -492,7 +483,6 @@
         }
 
 
-
         document.querySelectorAll('.follow-btn').forEach(button => {
             button.addEventListener('click', function () {
                 const userId = this.dataset.userId;
@@ -502,12 +492,10 @@
                 })
                     .then(res => res.json())
                     .then(data => {
-                        // Меняем текст кнопки в зависимости от того, подписан ли сейчас
                         this.textContent = data.following ? 'Отписаться' : 'Подписаться';
                     });
             });
         });
-
 
 
     </script>
